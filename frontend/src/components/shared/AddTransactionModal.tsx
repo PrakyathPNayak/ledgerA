@@ -1,0 +1,422 @@
+import { useMemo, useState } from 'react'
+import type { FormEvent } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+
+import { useAccounts, useCreateAccount } from '@/hooks/useAccounts'
+import { useCategories, useCreateCategory, useCreateSubcategory } from '@/hooks/useCategories'
+import api from '@/lib/api'
+
+const QUICK_AMOUNTS = [50, 100, 250, 500, 1000]
+
+type TransactionKind = 'expense' | 'income'
+
+interface AddTransactionModalProps {
+    isOpen: boolean
+    onClose: () => void
+    onCreated?: () => void
+}
+
+interface CreateTransactionPayload {
+    account_id: string
+    category_id: string
+    subcategory_id?: string
+    name: string
+    amount: number
+    transaction_date: string
+    notes?: string
+    is_scheduled: boolean
+}
+
+function formatDate(d: Date): string {
+    return d.toISOString().slice(0, 10)
+}
+
+function normalizeTransactionDate(input: string): string {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(input)) {
+        return input
+    }
+
+    const ddmmyyyy = input.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)
+    if (ddmmyyyy) {
+        const [, dd, mm, yyyy] = ddmmyyyy
+        return `${yyyy}-${mm}-${dd}`
+    }
+
+    return input
+}
+
+function extractApiErrorMessage(error: unknown, fallback: string): string {
+    const maybeMessage =
+        (error as { response?: { data?: { error?: { message?: string } } } })?.response?.data?.error?.message
+
+    if (typeof maybeMessage === 'string' && maybeMessage.trim() !== '') {
+        return maybeMessage
+    }
+
+    return fallback
+}
+
+export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransactionModalProps) {
+    const queryClient = useQueryClient()
+    const { data: accounts = [] } = useAccounts()
+    const { data: categories = [] } = useCategories()
+
+    const [kind, setKind] = useState<TransactionKind>('expense')
+    const [accountId, setAccountId] = useState('')
+    const [categoryId, setCategoryId] = useState('')
+    const [subcategoryId, setSubcategoryId] = useState('')
+    const [name, setName] = useState('')
+    const [amount, setAmount] = useState('')
+    const [transactionDate, setTransactionDate] = useState(formatDate(new Date()))
+    const [notes, setNotes] = useState('')
+    const [isScheduled, setIsScheduled] = useState(false)
+
+    const [newAccountName, setNewAccountName] = useState('')
+    const [newCategoryName, setNewCategoryName] = useState('')
+    const [newSubcategoryName, setNewSubcategoryName] = useState('')
+    const [inlineCreateError, setInlineCreateError] = useState<string | null>(null)
+    const [transactionError, setTransactionError] = useState<string | null>(null)
+
+    const createAccount = useCreateAccount()
+    const createCategory = useCreateCategory()
+    const createSubcategory = useCreateSubcategory(categoryId || '__none__')
+
+    const selectedCategory = useMemo(
+        () => categories.find((cat) => cat.id === categoryId),
+        [categories, categoryId],
+    )
+
+    const createTransaction = useMutation({
+        mutationFn: (payload: CreateTransactionPayload) => api.post('/transactions', payload),
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['transactions'] })
+            setTransactionError(null)
+            onCreated?.()
+            onClose()
+        },
+    })
+
+    if (!isOpen) {
+        return null
+    }
+
+    async function handleCreateAccount() {
+        const trimmed = newAccountName.trim()
+        if (!trimmed) return
+
+        try {
+            setInlineCreateError(null)
+            const created = (await createAccount.mutateAsync({ name: trimmed, opening_balance: 0 })) as { id?: string }
+            if (created?.id) {
+                setAccountId(created.id)
+            }
+            setNewAccountName('')
+        } catch (error) {
+            setInlineCreateError(extractApiErrorMessage(error, 'Unable to add account right now.'))
+        }
+    }
+
+    async function handleCreateCategory() {
+        const trimmed = newCategoryName.trim()
+        if (!trimmed) return
+
+        try {
+            setInlineCreateError(null)
+            const created = (await createCategory.mutateAsync({ name: trimmed })) as { id?: string }
+            if (created?.id) {
+                setCategoryId(created.id)
+                setSubcategoryId('')
+            }
+            setNewCategoryName('')
+        } catch (error) {
+            setInlineCreateError(extractApiErrorMessage(error, 'Unable to add category right now.'))
+        }
+    }
+
+    async function handleCreateSubcategory() {
+        const trimmed = newSubcategoryName.trim()
+        if (!trimmed || !categoryId) return
+
+        try {
+            setInlineCreateError(null)
+            const created = (await createSubcategory.mutateAsync({ name: trimmed })) as { id?: string }
+            if (created?.id) {
+                setSubcategoryId(created.id)
+            }
+            setNewSubcategoryName('')
+        } catch (error) {
+            setInlineCreateError(extractApiErrorMessage(error, 'Unable to add subcategory right now.'))
+        }
+    }
+
+    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault()
+
+        if (!accountId || !categoryId || !name.trim() || !amount) {
+            return
+        }
+
+        const parsedAmount = Number(amount)
+        if (Number.isNaN(parsedAmount) || parsedAmount <= 0) {
+            return
+        }
+
+        const signedAmount = kind === 'expense' ? -Math.abs(parsedAmount) : Math.abs(parsedAmount)
+
+        try {
+            setTransactionError(null)
+            await createTransaction.mutateAsync({
+                account_id: accountId,
+                category_id: categoryId,
+                subcategory_id: subcategoryId || undefined,
+                name: name.trim(),
+                amount: signedAmount,
+                transaction_date: normalizeTransactionDate(transactionDate),
+                notes: notes.trim() || undefined,
+                is_scheduled: isScheduled,
+            })
+        } catch (error) {
+            setTransactionError(extractApiErrorMessage(error, 'Unable to create transaction.'))
+        }
+    }
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4">
+            <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white shadow-xl">
+                <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+                    <h2 className="text-xl font-semibold text-slate-900">Add Transaction</h2>
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="rounded-md px-3 py-1.5 text-sm text-slate-500 hover:bg-slate-100"
+                    >
+                        Close
+                    </button>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-5 px-6 py-5">
+                    <div className="flex gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setKind('expense')}
+                            className={`rounded-full px-4 py-2 text-sm font-medium ${kind === 'expense' ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-600'
+                                }`}
+                        >
+                            Expense
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setKind('income')}
+                            className={`rounded-full px-4 py-2 text-sm font-medium ${kind === 'income' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'
+                                }`}
+                        >
+                            Income
+                        </button>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                        <label className="space-y-1">
+                            <span className="text-sm font-medium text-slate-700">Account</span>
+                            <select
+                                value={accountId}
+                                onChange={(e) => setAccountId(e.target.value)}
+                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                required
+                            >
+                                <option value="">Select account</option>
+                                {accounts.map((item) => (
+                                    <option key={item.id} value={item.id}>
+                                        {item.name}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="flex gap-2">
+                                <input
+                                    value={newAccountName}
+                                    onChange={(e) => setNewAccountName(e.target.value)}
+                                    placeholder="New account"
+                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleCreateAccount}
+                                    disabled={createAccount.isPending}
+                                    className="rounded-lg border border-slate-300 px-3 text-sm"
+                                >
+                                    Add
+                                </button>
+                            </div>
+                        </label>
+
+                        <label className="space-y-1">
+                            <span className="text-sm font-medium text-slate-700">Category</span>
+                            <select
+                                value={categoryId}
+                                onChange={(e) => {
+                                    setCategoryId(e.target.value)
+                                    setSubcategoryId('')
+                                }}
+                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                required
+                            >
+                                <option value="">Select category</option>
+                                {categories.map((item) => (
+                                    <option key={item.id} value={item.id}>
+                                        {item.name}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="flex gap-2">
+                                <input
+                                    value={newCategoryName}
+                                    onChange={(e) => setNewCategoryName(e.target.value)}
+                                    placeholder="New category"
+                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleCreateCategory}
+                                    disabled={createCategory.isPending}
+                                    className="rounded-lg border border-slate-300 px-3 text-sm"
+                                >
+                                    Add
+                                </button>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                        <label className="space-y-1">
+                            <span className="text-sm font-medium text-slate-700">Subcategory</span>
+                            <select
+                                value={subcategoryId}
+                                onChange={(e) => setSubcategoryId(e.target.value)}
+                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                            >
+                                <option value="">Auto / none</option>
+                                {(selectedCategory?.subcategories ?? []).map((item) => (
+                                    <option key={item.id} value={item.id}>
+                                        {item.name}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="flex gap-2">
+                                <input
+                                    value={newSubcategoryName}
+                                    onChange={(e) => setNewSubcategoryName(e.target.value)}
+                                    placeholder="New subcategory"
+                                    disabled={!categoryId}
+                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleCreateSubcategory}
+                                    disabled={!categoryId || createSubcategory.isPending}
+                                    className="rounded-lg border border-slate-300 px-3 text-sm disabled:opacity-60"
+                                >
+                                    Add
+                                </button>
+                            </div>
+                        </label>
+
+                        <label className="space-y-1">
+                            <span className="text-sm font-medium text-slate-700">Name</span>
+                            <input
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                placeholder="e.g. Groceries"
+                                required
+                            />
+                        </label>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-3">
+                        <label className="space-y-1">
+                            <span className="text-sm font-medium text-slate-700">Amount</span>
+                            <input
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value)}
+                                inputMode="decimal"
+                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                placeholder="0.00"
+                                required
+                            />
+                        </label>
+
+                        <label className="space-y-1">
+                            <span className="text-sm font-medium text-slate-700">Date</span>
+                            <input
+                                type="date"
+                                value={transactionDate}
+                                onChange={(e) => setTransactionDate(e.target.value)}
+                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                required
+                            />
+                        </label>
+
+                        <label className="flex items-end gap-2">
+                            <input
+                                type="checkbox"
+                                checked={isScheduled}
+                                onChange={(e) => setIsScheduled(e.target.checked)}
+                            />
+                            <span className="text-sm text-slate-700">Scheduled</span>
+                        </label>
+                    </div>
+
+                    <div className="space-y-2">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Quick Fill Amount</p>
+                        <div className="flex flex-wrap gap-2">
+                            {QUICK_AMOUNTS.map((value) => (
+                                <button
+                                    key={value}
+                                    type="button"
+                                    onClick={() => setAmount(String(value))}
+                                    className="rounded-full border border-slate-300 px-3 py-1 text-sm text-slate-700"
+                                >
+                                    {value}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <label className="space-y-1">
+                        <span className="text-sm font-medium text-slate-700">Notes</span>
+                        <textarea
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                            rows={3}
+                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                        />
+                    </label>
+
+                    {transactionError ? (
+                        <p className="rounded-md bg-rose-50 px-3 py-2 text-sm text-rose-700">{transactionError}</p>
+                    ) : null}
+
+                    {inlineCreateError ? (
+                        <p className="rounded-md bg-rose-50 px-3 py-2 text-sm text-rose-700">{inlineCreateError}</p>
+                    ) : null}
+
+                    <div className="flex justify-end gap-2 border-t border-slate-200 pt-4">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-700"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={createTransaction.isPending}
+                            className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+                        >
+                            {createTransaction.isPending ? 'Saving...' : 'Save Transaction'}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    )
+}

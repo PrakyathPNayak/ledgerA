@@ -1,0 +1,47 @@
+# Secrets and local env
+.env
+.env.*
+!.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+config/*.json
+
+# Local tooling and caches
+.gocache/
+.gomodcache/
+.gopath/
+.venv-tools/
+__pycache__/
+*.pyc
+
+# Build outputs and generated artifacts
+bin/
+server
+dist/
+frontend/dist/
+frontend/dist-ssr/
+coverage/
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Logs and temp
+*.log
+logs/
+tmp/
+
+# Local accidental scratch files
+et -a
+ql $DATABASE_URL|psql

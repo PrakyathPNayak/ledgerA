@@ -1,0 +1,2 @@
+Override Instruction:
+yeah, just push the changes to git with the appropriate girignore file as mentioned before. I will fix the errors later. DO THE GIT ACTIONS AS INSTRUCTRED BEOFRE. DO NOT PUSH SENSITIVE INFO TO GITHUB PUBLIC REPO.
