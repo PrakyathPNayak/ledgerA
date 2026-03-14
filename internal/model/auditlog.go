@@ -18,6 +18,11 @@ type AuditLog struct {
 	CreatedAt  time.Time `gorm:"type:timestamptz;not null;default:now()"`
 }
 
+// TableName pins GORM model mapping to the migration-created table name.
+func (AuditLog) TableName() string {
+	return "audit_log"
+}
+
 // BeforeCreate sets a UUID before inserting into the database if not already set.
 func (l *AuditLog) BeforeCreate(_ *gorm.DB) error {
 	if l.ID == uuid.Nil {

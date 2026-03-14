@@ -72,6 +72,7 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
     const [isScheduled, setIsScheduled] = useState(false)
 
     const [newAccountName, setNewAccountName] = useState('')
+    const [newAccountOpeningBalance, setNewAccountOpeningBalance] = useState('0')
     const [newCategoryName, setNewCategoryName] = useState('')
     const [newSubcategoryName, setNewSubcategoryName] = useState('')
     const [inlineCreateError, setInlineCreateError] = useState<string | null>(null)
@@ -104,13 +105,23 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
         const trimmed = newAccountName.trim()
         if (!trimmed) return
 
+        const parsedOpeningBalance = Number(newAccountOpeningBalance)
+        if (!Number.isFinite(parsedOpeningBalance)) {
+            setInlineCreateError('Opening balance must be a valid number.')
+            return
+        }
+
         try {
             setInlineCreateError(null)
-            const created = (await createAccount.mutateAsync({ name: trimmed, opening_balance: 0 })) as { id?: string }
+            const created = (await createAccount.mutateAsync({
+                name: trimmed,
+                opening_balance: parsedOpeningBalance,
+            })) as { id?: string }
             if (created?.id) {
                 setAccountId(created.id)
             }
             setNewAccountName('')
+            setNewAccountOpeningBalance('0')
         } catch (error) {
             setInlineCreateError(extractApiErrorMessage(error, 'Unable to add account right now.'))
         }
@@ -236,6 +247,13 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
                                     onChange={(e) => setNewAccountName(e.target.value)}
                                     placeholder="New account"
                                     className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                />
+                                <input
+                                    value={newAccountOpeningBalance}
+                                    onChange={(e) => setNewAccountOpeningBalance(e.target.value)}
+                                    placeholder="Opening"
+                                    inputMode="decimal"
+                                    className="w-32 rounded-lg border border-slate-300 px-3 py-2 text-sm"
                                 />
                                 <button
                                     type="button"
