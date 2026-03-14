@@ -54,8 +54,26 @@ def check_backpressure():
 def main():
     todo_file = Path("TODO.md")
     if not todo_file.exists():
-        print(f"{COLORS['red']}TODO.md not found!{COLORS['reset']}")
-        sys.exit(1)
+        print(f"{COLORS['yellow']}TODO.md not found. Running gates-only mode.{COLORS['reset']}")
+        print(f"{COLORS['cyan']}Link:{COLORS['reset']} Frontend http://localhost:5173")
+        print(f"{COLORS['cyan']}Link:{COLORS['reset']} API health http://localhost:8080/api/v1/health")
+
+        if Path("go.mod").exists() or Path("frontend/package.json").exists():
+            if not check_backpressure():
+                print(f"{COLORS['red']}Backpressure gates failed. Fix errors before proceeding.{COLORS['reset']}")
+                sys.exit(1)
+
+        try:
+            user_input = input("ENTER to continue | type instruction: ")
+            task_file = Path("RALPH_TASK.md")
+            if user_input.strip() == "":
+                task_file.write_text("Active Task:\nNo TODO.md task available")
+            else:
+                task_file.write_text(f"Override Instruction:\n{user_input}")
+            sys.exit(0)
+        except KeyboardInterrupt:
+            print("\nExiting...")
+            sys.exit(1)
 
     todos = todo_file.read_text().splitlines()
     completed = []
