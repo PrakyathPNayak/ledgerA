@@ -45,3 +45,9 @@ tmp/
 # Local accidental scratch files
 et -a
 ql $DATABASE_URL*
+
+# Internal notes not for public repo
+DEBUG_REPORT.md
+TODO.md
+RALPH_TASK.md
+docs/SKILL_ACQUISITION.md
