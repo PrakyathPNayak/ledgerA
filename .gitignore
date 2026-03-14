@@ -44,4 +44,4 @@ tmp/
 
 # Local accidental scratch files
 et -a
-ql $DATABASE_URL|psql
+ql $DATABASE_URL*
