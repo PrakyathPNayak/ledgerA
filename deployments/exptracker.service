@@ -1,0 +1,29 @@
+[Unit]
+Description=ledgerA Expenditure Tracker API
+After=network.target postgresql.service
+Requires=postgresql.service
+
+[Service]
+Type=simple
+User=ledgera
+Group=ledgera
+WorkingDirectory=/opt/ledgera
+EnvironmentFile=/opt/ledgera/.env
+ExecStart=/opt/ledgera/bin/ledgera
+Restart=on-failure
+RestartSec=5s
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/ledgera
+PrivateTmp=true
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=exptracker
+
+[Install]
+WantedBy=multi-user.target

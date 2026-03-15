@@ -100,3 +100,6 @@ golangci-lint run
 - `pkg/pdf` PDF report generation
 - `migrations` SQL schema migrations
 - `frontend` React PWA
+
+## Deep Documentation
+- Server internals and operations handbook: `docs/SERVER_DEEP_DIVE.md`

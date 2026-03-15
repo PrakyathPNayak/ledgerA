@@ -4,6 +4,7 @@ import (
 	"context"
 	"ledgerA/internal/dto"
 	"ledgerA/internal/model"
+	"ledgerA/internal/repository"
 
 	"github.com/google/uuid"
 )
@@ -63,4 +64,9 @@ type QuickTransactionService interface {
 // StatsService defines stats business logic.
 type StatsService interface {
 	Summary(ctx context.Context, userID uuid.UUID, query dto.StatsQuery) (*dto.StatsSummaryResponse, error)
+}
+
+// AuditService defines audit query business logic.
+type AuditService interface {
+	List(ctx context.Context, userID uuid.UUID, filter repository.AuditListFilter) ([]model.AuditLog, int64, error)
 }

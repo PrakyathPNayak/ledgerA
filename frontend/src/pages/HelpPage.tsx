@@ -1,29 +1,46 @@
 import { PageShell } from '@/components/layout/PageShell'
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from '@/components/ui/accordion'
 
 const sections = [
     {
+        id: 'getting-started',
         title: 'Getting Started',
-        body: 'Create at least one account, then add categories and your first transaction from Dashboard. Use Quick Transactions for repeated spends like rent, fuel, or subscriptions.',
+        body: 'Create at least one account (e.g. Savings, Wallet) before adding transactions. Navigate to Accounts → Add Account. Then set up Categories to organise your spending. Once you have an account and at least one category, go to Dashboard and press the + button to record your first transaction.',
     },
     {
-        title: 'Understanding Income and Expense',
-        body: 'Income entries should be positive amounts. Expense entries are stored as negative amounts. The net card on Dashboard and Stats reflects income minus expense.',
+        id: 'adding-transactions',
+        title: 'Adding Transactions',
+        body: 'Tap the + FAB on Dashboard or go to the Transactions page. Choose Income for money coming in (salary, freelance) and Expense for money going out (groceries, bills). Enter the amount as a positive number — the app stores expenses as negative values internally. Pick an account, category, optional subcategory, and a date. Add a description for searchability.',
     },
     {
-        title: 'Passbook Mode',
-        body: 'Open any account from the Accounts page to see passbook-style chronology. This view helps reconcile account balance movement line by line.',
+        id: 'managing-accounts',
+        title: 'Managing Accounts',
+        body: 'Each account tracks its own running balance. Open an account from the Accounts page to see a passbook-style chronological view of every transaction affecting that account. You can create, rename, or delete accounts. Deleting an account removes all associated transactions — this action is irreversible.',
     },
     {
-        title: 'Search and Filters',
-        body: 'Use Search to combine full text, account, category, and transaction type filters. Load More fetches the next page without losing existing results.',
+        id: 'stats-charts',
+        title: 'Stats & Charts',
+        body: 'The Stats page shows income vs expense breakdowns with a bar chart and category doughnut for the selected period. Use the period selector to switch between Day, Week, Month, and Year views. Previous/Next navigation steps through time. Press Export PDF to download a shareable snapshot of the current view, including totals and category breakdown.',
     },
     {
-        title: 'Stats and PDF Export',
-        body: 'Stats supports day/week/month/year windows. Export PDF downloads a shareable report snapshot for the selected filter set.',
+        id: 'searching-transactions',
+        title: 'Searching Transactions',
+        body: 'The Search page combines full-text search with filters for account, category, transaction type (income/expense), and date range. Results are paginated — use Load More to fetch additional rows without losing what is already visible. All active filters are shown as dismissible chips above the results list.',
     },
     {
-        title: 'Offline and PWA',
-        body: 'Install ledgerA from your browser menu. Cached assets allow quick start while offline. Mutations still require connectivity and are retried when connection resumes.',
+        id: 'quick-transactions',
+        title: 'Quick Transactions',
+        body: 'Quick Transactions are pre-configured transaction templates for recurring spends like rent, subscriptions, or fuel. Create one from the Quick Transactions page by filling in a label, amount, account, and category. Use the Execute button (▶) to instantly record that transaction for today. Drag the handle icon to reorder your quick transaction tiles.',
+    },
+    {
+        id: 'data-privacy',
+        title: 'Data & Privacy',
+        body: 'All data is stored in a PostgreSQL database scoped to your Firebase account. ledgerA does not share your financial data with third parties. The app works offline for viewing cached data — mutations (creating or editing records) require an active internet connection. You can export a PDF report at any time from the Stats page.',
     },
 ]
 
@@ -38,20 +55,18 @@ export function HelpPage() {
                     </p>
                 </section>
 
-                <section className="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
-                    {sections.map((section) => (
-                        <details key={section.title} className="group border-b border-slate-100 p-4 last:border-b-0">
-                            <summary className="cursor-pointer list-none text-sm font-semibold text-slate-900">
-                                <span className="inline-flex items-center gap-2">
-                                    <span className="text-slate-400 transition-transform group-open:rotate-90">▶</span>
-                                    {section.title}
-                                </span>
-                            </summary>
-                            <p className="mt-3 text-sm leading-6 text-slate-600">{section.body}</p>
-                        </details>
-                    ))}
+                <section className="rounded-2xl border border-slate-200 bg-white px-6 shadow-sm">
+                    <Accordion type="multiple">
+                        {sections.map((section) => (
+                            <AccordionItem key={section.id} value={section.id}>
+                                <AccordionTrigger>{section.title}</AccordionTrigger>
+                                <AccordionContent>{section.body}</AccordionContent>
+                            </AccordionItem>
+                        ))}
+                    </Accordion>
                 </section>
             </div>
         </PageShell>
     )
 }
+

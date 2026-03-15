@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"ledgerA/internal/dto"
 	"ledgerA/internal/middleware"
 
 	"github.com/gin-contrib/cors"
@@ -17,6 +16,7 @@ type RouterDependencies struct {
 	TransactionHandler      *TransactionHandler
 	QuickTransactionHandler *QuickTransactionHandler
 	StatsHandler            *StatsHandler
+	AuditHandler            *AuditHandler
 	AllowedOrigins          []string
 }
 
@@ -80,9 +80,7 @@ func SetupRouter(deps RouterDependencies) *gin.Engine {
 			protected.GET("/stats/export/pdf", deps.StatsHandler.ExportPDF)
 			protected.GET("/stats/compare", deps.StatsHandler.Compare)
 
-			protected.GET("/audit", func(c *gin.Context) {
-				dto.Error(c, 501, "ERR_NOT_IMPLEMENTED", "audit endpoint will be enabled after audit query handler wiring")
-			})
+			protected.GET("/audit", deps.AuditHandler.List)
 		}
 	}
 
