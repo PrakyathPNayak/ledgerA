@@ -393,18 +393,92 @@ Query params: `period`, `value`, optional `account_id`
 Response: `200 OK` with `application/pdf` binary stream.
 
 ### `GET /stats/compare`
-Query params are implementation-defined for compare mode.
+Query params:
+- `period` = `month|year` (required)
+- `value1` — first period value, e.g. `2026-03` (required)
+- `value2` — second period value, e.g. `2026-02` (required)
+- `account_id` — optional account filter
 
-Example response:
+Response:
 ```json
 {
   "data": {
-    "left": { "period": "2026-02", "expense": -8000 },
-    "right": { "period": "2026-03", "expense": -9500 },
-    "delta": -1500
+    "period1": {
+      "label": "2026-03",
+      "total_income": 12000,
+      "total_expense": -9500,
+      "net": 2500,
+      "top_expense_categories": [
+        { "category": "Food", "subcategory": "Groceries", "amount": -3200, "percentage": 33.68 }
+      ],
+      "top_income_categories": [
+        { "category": "Salary", "subcategory": "Monthly", "amount": 12000, "percentage": 100 }
+      ]
+    },
+    "period2": {
+      "label": "2026-02",
+      "total_income": 10000,
+      "total_expense": -8000,
+      "net": 2000,
+      "top_expense_categories": [],
+      "top_income_categories": []
+    },
+    "income_change_pct": 20.0,
+    "expense_change_pct": 18.75,
+    "net_change_pct": 25.0
   }
 }
 ```
+
+## Chat (Bearer token required)
+### `POST /chat`
+Natural-language chatbot that can record transactions, check balances, and answer questions.
+Uses pattern matching by default; optionally connects to a local Ollama LLM if `OLLAMA_URL` is set.
+
+Request:
+```json
+{
+  "message": "Spent 500 on groceries from Cash"
+}
+```
+
+Response (with action):
+```json
+{
+  "data": {
+    "reply": "✅ Recorded: expense of 500.00 for groceries (Cash)",
+    "action": {
+      "type": "expense",
+      "name": "groceries",
+      "amount": 500,
+      "account": "Cash",
+      "category": "",
+      "date": ""
+    },
+    "success": true
+  }
+}
+```
+
+Response (informational):
+```json
+{
+  "data": {
+    "reply": "Your current balances:\n• Cash: ₹850.00\n• Savings: ₹5,000.00",
+    "action": null,
+    "success": true
+  }
+}
+```
+
+Supported patterns:
+- `Spent X on Y [from ACCOUNT]`
+- `Paid X for Y [from ACCOUNT]`
+- `Bought Y for X [from ACCOUNT]`
+- `Got/Received/Earned X [from] Y [from ACCOUNT]`
+- `balance` / `how much` — shows account balances
+- `recent` / `last transactions` — shows recent transactions
+- `help` / `what can you do` — lists available commands
 
 ## Audit
 ### `GET /audit`

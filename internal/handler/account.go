@@ -23,7 +23,7 @@ func NewAccountHandler(accountService service.AccountService, userService servic
 func (h *AccountHandler) resolveUserID(c *gin.Context) (uuid.UUID, bool) {
 	uid, err := middleware.GetFirebaseUID(c)
 	if err != nil {
-		dto.Error(c, 401, "ERR_UNAUTHORIZED", err.Error())
+		dto.Error(c, 401, "ERR_UNAUTHORIZED", "unauthorized")
 		return uuid.Nil, false
 	}
 	user, err := h.userService.GetMe(c.Request.Context(), uid)
@@ -42,7 +42,7 @@ func (h *AccountHandler) List(c *gin.Context) {
 	}
 	items, total, err := h.accountService.List(c.Request.Context(), userID)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to list accounts")
 		return
 	}
 	responses := make([]dto.AccountResponse, 0, len(items))
@@ -65,7 +65,7 @@ func (h *AccountHandler) Create(c *gin.Context) {
 	}
 	item, err := h.accountService.Create(c.Request.Context(), userID, req)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to create account")
 		return
 	}
 	dto.Created(c, dto.NewAccountResponse(*item))
@@ -89,7 +89,7 @@ func (h *AccountHandler) Update(c *gin.Context) {
 	}
 	item, err := h.accountService.Update(c.Request.Context(), userID, id, req)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to update account")
 		return
 	}
 	dto.Success(c, dto.NewAccountResponse(*item))
@@ -107,7 +107,7 @@ func (h *AccountHandler) Delete(c *gin.Context) {
 		return
 	}
 	if err := h.accountService.Delete(c.Request.Context(), userID, id); err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to delete account")
 		return
 	}
 	c.Status(204)

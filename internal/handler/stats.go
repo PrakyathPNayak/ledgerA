@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"fmt"
 	"ledgerA/internal/dto"
 	"ledgerA/internal/middleware"
 	"ledgerA/internal/service"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -23,7 +25,7 @@ func NewStatsHandler(statsService service.StatsService, userService service.User
 func (h *StatsHandler) resolveUserID(c *gin.Context) (uuid.UUID, bool) {
 	uid, err := middleware.GetFirebaseUID(c)
 	if err != nil {
-		dto.Error(c, 401, "ERR_UNAUTHORIZED", err.Error())
+		dto.Error(c, 401, "ERR_UNAUTHORIZED", "unauthorized")
 		return uuid.Nil, false
 	}
 	user, err := h.userService.GetMe(c.Request.Context(), uid)
@@ -42,12 +44,12 @@ func (h *StatsHandler) Summary(c *gin.Context) {
 	}
 	var query dto.StatsQuery
 	if err := c.ShouldBindQuery(&query); err != nil {
-		dto.Error(c, 400, "ERR_BAD_REQUEST", err.Error())
+		dto.Error(c, 400, "ERR_BAD_REQUEST", "invalid query parameters")
 		return
 	}
 	result, err := h.statsService.Summary(c.Request.Context(), userID, query)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to generate stats summary")
 		return
 	}
 	dto.Success(c, result)
@@ -55,10 +57,44 @@ func (h *StatsHandler) Summary(c *gin.Context) {
 
 // ExportPDF handles GET /api/v1/stats/export/pdf.
 func (h *StatsHandler) ExportPDF(c *gin.Context) {
-	dto.Error(c, 501, "ERR_NOT_IMPLEMENTED", "PDF export service is wired in TODO-014")
+	userID, ok := h.resolveUserID(c)
+	if !ok {
+		return
+	}
+	var query dto.StatsQuery
+	if err := c.ShouldBindQuery(&query); err != nil {
+		dto.Error(c, 400, "ERR_BAD_REQUEST", "invalid query parameters")
+		return
+	}
+
+	pdfBytes, err := h.statsService.ExportPDF(c.Request.Context(), userID, query)
+	if err != nil {
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to generate PDF report")
+		return
+	}
+
+	filename := fmt.Sprintf("ledgerA-stats-%s-%s.pdf", query.Period, query.Value)
+	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%q", filename))
+	c.Data(http.StatusOK, "application/pdf", pdfBytes)
 }
 
 // Compare handles GET /api/v1/stats/compare.
 func (h *StatsHandler) Compare(c *gin.Context) {
-	dto.Error(c, 501, "ERR_NOT_IMPLEMENTED", "compare stats is not implemented yet")
+	userID, ok := h.resolveUserID(c)
+	if !ok {
+		return
+	}
+
+	var query dto.CompareQuery
+	if err := c.ShouldBindQuery(&query); err != nil {
+		dto.Error(c, 400, "ERR_BAD_REQUEST", "invalid query parameters")
+		return
+	}
+
+	result, err := h.statsService.Compare(c.Request.Context(), userID, query)
+	if err != nil {
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to generate comparison")
+		return
+	}
+	dto.Success(c, result)
 }

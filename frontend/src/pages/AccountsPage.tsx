@@ -50,9 +50,9 @@ export function AccountsPage() {
 
     return (
         <PageShell title="Accounts">
-            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div className="mb-4 flex items-center justify-between">
-                    <h2 className="text-lg font-semibold text-slate-900">All Accounts</h2>
+                    <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">All Accounts</h2>
                     <div className="flex items-center gap-3">
                         <p className="text-sm text-slate-500">{accounts.length} accounts</p>
                         <button
@@ -112,11 +112,11 @@ export function AccountsPage() {
                         <Link
                             key={account.id}
                             to={`/accounts/${account.id}`}
-                            className="rounded-xl border border-slate-200 p-4 transition-colors hover:border-slate-300 hover:bg-slate-50"
+                            className="rounded-xl border border-slate-200 p-4 transition-colors hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:hover:border-slate-600 dark:hover:bg-slate-800"
                         >
-                            <p className="text-sm font-semibold text-slate-900">{account.name}</p>
+                            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{account.name}</p>
                             <p className="mt-1 text-xs uppercase tracking-wide text-slate-500">{account.account_type || 'cash'}</p>
-                            <p className="mt-4 text-lg font-bold text-slate-900">{money(account.current_balance)}</p>
+                            <p className="mt-4 text-lg font-bold text-slate-900 dark:text-slate-100">{money(account.current_balance)}</p>
                             <p className="mt-1 text-xs text-slate-500">Opening: {money(account.opening_balance)}</p>
                         </Link>
                     ))}

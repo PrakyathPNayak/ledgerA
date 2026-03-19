@@ -145,3 +145,27 @@ export interface StatsFilters {
     value: string
     account_id?: string
 }
+
+export interface ComparePeriodData {
+    label: string
+    total_income: number
+    total_expense: number
+    net: number
+    top_expense: CategoryBreakdownItem[]
+    top_income: CategoryBreakdownItem[]
+}
+
+export interface CompareResponse {
+    period1: ComparePeriodData
+    period2: ComparePeriodData
+    income_change_pct: number
+    expense_change_pct: number
+    net_change: number
+}
+
+export interface CompareFilters {
+    period: Period
+    value1: string
+    value2: string
+    account_id?: string
+}

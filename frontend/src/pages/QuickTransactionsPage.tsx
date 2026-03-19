@@ -75,8 +75,8 @@ export function QuickTransactionsPage() {
     return (
         <PageShell title="Quick Transactions">
             <div className="grid gap-4 lg:grid-cols-[380px,1fr]">
-                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                    <h2 className="text-base font-semibold text-slate-900">New Template</h2>
+                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                    <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">New Template</h2>
                     <form className="mt-3 space-y-3" onSubmit={handleCreate}>
                         <input
                             value={label}
@@ -126,9 +126,9 @@ export function QuickTransactionsPage() {
                     </form>
                 </section>
 
-                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                     <div className="mb-3 flex items-center justify-between">
-                        <h2 className="text-base font-semibold text-slate-900">Templates</h2>
+                        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Templates</h2>
                         <p className="text-xs text-slate-500">Drag to reorder</p>
                     </div>
 
@@ -178,7 +178,7 @@ function QuickTransactionCard({
         <article
             ref={setNodeRef}
             style={style}
-            className="rounded-xl border border-slate-200 bg-slate-50 p-3"
+            className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800"
         >
             <div className="flex items-start justify-between gap-3">
                 <button
@@ -190,7 +190,7 @@ function QuickTransactionCard({
                     Drag
                 </button>
                 <div className="flex-1">
-                    <p className="text-sm font-semibold text-slate-900">{item.label}</p>
+                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{item.label}</p>
                     <p className="mt-1 text-xs text-slate-500">
                         {accountName ?? 'Any account'} • {categoryName ?? 'Any category'}
                     </p>

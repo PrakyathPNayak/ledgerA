@@ -23,7 +23,7 @@ func NewTransactionHandler(transactionService service.TransactionService, userSe
 func (h *TransactionHandler) resolveUserID(c *gin.Context) (uuid.UUID, bool) {
 	uid, err := middleware.GetFirebaseUID(c)
 	if err != nil {
-		dto.Error(c, 401, "ERR_UNAUTHORIZED", err.Error())
+		dto.Error(c, 401, "ERR_UNAUTHORIZED", "unauthorized")
 		return uuid.Nil, false
 	}
 	user, err := h.userService.GetMe(c.Request.Context(), uid)
@@ -47,7 +47,7 @@ func (h *TransactionHandler) List(c *gin.Context) {
 	}
 	items, total, err := h.transactionService.List(c.Request.Context(), userID, filters)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to list transactions")
 		return
 	}
 	responses := make([]dto.TransactionResponse, 0, len(items))
@@ -78,7 +78,7 @@ func (h *TransactionHandler) Create(c *gin.Context) {
 	}
 	item, err := h.transactionService.Create(c.Request.Context(), userID, req)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to create transaction")
 		return
 	}
 	dto.Created(c, dto.NewTransactionResponse(*item))
@@ -97,7 +97,7 @@ func (h *TransactionHandler) Get(c *gin.Context) {
 	}
 	item, err := h.transactionService.Get(c.Request.Context(), userID, id)
 	if err != nil {
-		dto.Error(c, 404, "ERR_NOT_FOUND", err.Error())
+		dto.Error(c, 404, "ERR_NOT_FOUND", "transaction not found")
 		return
 	}
 	dto.Success(c, dto.NewTransactionResponse(*item))
@@ -121,7 +121,7 @@ func (h *TransactionHandler) Update(c *gin.Context) {
 	}
 	item, err := h.transactionService.Update(c.Request.Context(), userID, id, req)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to update transaction")
 		return
 	}
 	dto.Success(c, dto.NewTransactionResponse(*item))
@@ -139,7 +139,7 @@ func (h *TransactionHandler) Delete(c *gin.Context) {
 		return
 	}
 	if err := h.transactionService.Delete(c.Request.Context(), userID, id); err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to delete transaction")
 		return
 	}
 	c.Status(204)

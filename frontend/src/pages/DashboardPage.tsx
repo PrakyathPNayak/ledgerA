@@ -63,9 +63,9 @@ export function DashboardPage() {
                     <StatCard label="Net" value={money(stats?.net ?? 0)} tone="neutral" />
                 </section>
 
-                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                     <div className="mb-4 flex items-center justify-between">
-                        <h2 className="text-lg font-semibold text-slate-900">Recent Transactions</h2>
+                        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Recent Transactions</h2>
                         <button
                             type="button"
                             onClick={() => setIsAddOpen(true)}
@@ -110,15 +110,15 @@ export function DashboardPage() {
 function StatCard({ label, value, tone }: { label: string; value: string; tone: 'income' | 'expense' | 'neutral' }) {
     const toneClass =
         tone === 'income'
-            ? 'border-emerald-200 bg-emerald-50'
+            ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950'
             : tone === 'expense'
-                ? 'border-rose-200 bg-rose-50'
-                : 'border-slate-200 bg-slate-50'
+                ? 'border-rose-200 bg-rose-50 dark:border-rose-800 dark:bg-rose-950'
+                : 'border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800'
 
     return (
         <article className={`rounded-2xl border p-4 ${toneClass}`}>
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">{value}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</p>
+            <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-slate-100">{value}</p>
         </article>
     )
 }

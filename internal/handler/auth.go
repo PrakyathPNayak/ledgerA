@@ -35,7 +35,7 @@ func (h *AuthHandler) Sync(c *gin.Context) {
 
 	user, err := h.userService.Sync(c.Request.Context(), verified.UID, req)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to sync user")
 		return
 	}
 

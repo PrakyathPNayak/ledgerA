@@ -17,6 +17,7 @@ type RouterDependencies struct {
 	QuickTransactionHandler *QuickTransactionHandler
 	StatsHandler            *StatsHandler
 	AuditHandler            *AuditHandler
+	ChatHandler             *ChatHandler
 	AllowedOrigins          []string
 }
 
@@ -81,6 +82,8 @@ func SetupRouter(deps RouterDependencies) *gin.Engine {
 			protected.GET("/stats/compare", deps.StatsHandler.Compare)
 
 			protected.GET("/audit", deps.AuditHandler.List)
+
+			protected.POST("/chat", deps.ChatHandler.Chat)
 		}
 	}
 

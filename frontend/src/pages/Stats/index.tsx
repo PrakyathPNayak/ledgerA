@@ -101,11 +101,11 @@ function BarsTooltip({ active, payload, label }: BarsTooltipProps) {
     const net = income + expense
 
     return (
-        <div className="rounded-lg border border-slate-200 bg-white p-3 text-xs shadow-lg">
-            <p className="font-semibold text-slate-900">{label}</p>
-            <p className="mt-1 text-emerald-700">Income: {formatMoney(income)}</p>
-            <p className="text-rose-700">Expense: {formatMoney(expense)}</p>
-            <p className="mt-1 font-semibold text-slate-900">Net: {formatMoney(net)}</p>
+        <div className="rounded-lg border border-slate-200 bg-white p-3 text-xs shadow-lg dark:border-slate-700 dark:bg-slate-800">
+            <p className="font-semibold text-slate-900 dark:text-slate-100">{label}</p>
+            <p className="mt-1 text-emerald-700 dark:text-emerald-400">Income: {formatMoney(income)}</p>
+            <p className="text-rose-700 dark:text-rose-400">Expense: {formatMoney(expense)}</p>
+            <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">Net: {formatMoney(net)}</p>
         </div>
     )
 }
@@ -118,10 +118,10 @@ function DonutTooltip({ active, payload }: DonutTooltipProps) {
     const item = payload[0].payload
 
     return (
-        <div className="rounded-lg border border-slate-200 bg-white p-3 text-xs shadow-lg">
-            <p className="font-semibold text-slate-900">{item.name}</p>
-            <p className="mt-1 text-slate-700">Amount: {formatMoney(item.amount)}</p>
-            <p className="text-slate-600">Share: {item.percentage.toFixed(2)}%</p>
+        <div className="rounded-lg border border-slate-200 bg-white p-3 text-xs shadow-lg dark:border-slate-700 dark:bg-slate-800">
+            <p className="font-semibold text-slate-900 dark:text-slate-100">{item.name}</p>
+            <p className="mt-1 text-slate-700 dark:text-slate-300">Amount: {formatMoney(item.amount)}</p>
+            <p className="text-slate-600 dark:text-slate-400">Share: {item.percentage.toFixed(2)}%</p>
         </div>
     )
 }
@@ -199,10 +199,10 @@ export function StatsPage() {
     return (
         <PageShell title="Stats">
             <div className="space-y-6">
-                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                     <div className="grid gap-3 md:grid-cols-4">
                         <label className="space-y-1">
-                            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">Period</span>
+                            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Period</span>
                             <select
                                 value={period}
                                 onChange={(event) => setPeriod(event.target.value as Period)}
@@ -265,8 +265,8 @@ export function StatsPage() {
                     <StatCard label="Net" value={formatMoney(stats?.net ?? 0)} tone="neutral" />
                 </section>
 
-                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                    <h2 className="text-base font-semibold text-slate-900">Income and Expense Timeline</h2>
+                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                    <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Income and Expense Timeline</h2>
                     <div className="mt-4" style={{ height: 320 }}>
                         {isLoading ? (
                             <p className="text-sm text-slate-500">Loading chart...</p>
@@ -286,8 +286,8 @@ export function StatsPage() {
                 </section>
 
                 <section className="grid gap-4 lg:grid-cols-2">
-                    <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                        <h2 className="text-base font-semibold text-slate-900">Expense by Category</h2>
+                    <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Expense by Category</h2>
                         <div className="mt-4 h-72">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
@@ -309,8 +309,8 @@ export function StatsPage() {
                         </div>
                     </article>
 
-                    <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                        <h2 className="text-base font-semibold text-slate-900">Income by Category</h2>
+                    <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Income by Category</h2>
                         <div className="mt-4 h-72">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
@@ -340,15 +340,15 @@ export function StatsPage() {
 function StatCard({ label, value, tone }: { label: string; value: string; tone: 'income' | 'expense' | 'neutral' }) {
     const toneClass =
         tone === 'income'
-            ? 'border-emerald-200 bg-emerald-50'
+            ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950'
             : tone === 'expense'
-                ? 'border-rose-200 bg-rose-50'
-                : 'border-slate-200 bg-slate-50'
+                ? 'border-rose-200 bg-rose-50 dark:border-rose-800 dark:bg-rose-950'
+                : 'border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800'
 
     return (
         <article className={`rounded-2xl border p-4 ${toneClass}`}>
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">{value}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</p>
+            <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-slate-100">{value}</p>
         </article>
     )
 }

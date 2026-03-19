@@ -64,6 +64,8 @@ type QuickTransactionService interface {
 // StatsService defines stats business logic.
 type StatsService interface {
 	Summary(ctx context.Context, userID uuid.UUID, query dto.StatsQuery) (*dto.StatsSummaryResponse, error)
+	ExportPDF(ctx context.Context, userID uuid.UUID, query dto.StatsQuery) ([]byte, error)
+	Compare(ctx context.Context, userID uuid.UUID, query dto.CompareQuery) (*dto.CompareResponse, error)
 }
 
 // AuditService defines audit query business logic.

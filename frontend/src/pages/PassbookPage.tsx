@@ -36,15 +36,15 @@ export function PassbookPage() {
 
     return (
         <PageShell title="Passbook">
-            <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-sm text-slate-500">Account</p>
-                        <h2 className="text-2xl font-bold text-slate-900">{account?.name ?? 'Unknown account'}</h2>
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{account?.name ?? 'Unknown account'}</h2>
                     </div>
                     <div className="text-right">
                         <p className="text-xs uppercase tracking-wide text-slate-500">Current Balance</p>
-                        <p className="text-2xl font-bold text-slate-900">{money(account?.current_balance ?? 0)}</p>
+                        <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{money(account?.current_balance ?? 0)}</p>
                     </div>
                 </div>
 

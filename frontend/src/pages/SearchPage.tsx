@@ -60,7 +60,7 @@ export function SearchPage() {
     return (
         <PageShell title="Search">
             <div className="space-y-4">
-                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                     <div className="grid gap-3 md:grid-cols-4">
                         <input
                             value={searchText}
@@ -107,7 +107,7 @@ export function SearchPage() {
                     </div>
                 </section>
 
-                <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                     <SortableTable
                         columns={columns}
                         hasRows={items.length > 0}

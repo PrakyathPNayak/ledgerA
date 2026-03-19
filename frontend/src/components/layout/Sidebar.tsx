@@ -5,6 +5,7 @@ import {
   GitCompare,
   HelpCircle,
   LayoutDashboard,
+  MessageCircle,
   Search,
   Zap,
 } from 'lucide-react'
@@ -18,7 +19,8 @@ const navItems = [
   { to: '/accounts', label: 'Accounts', icon: CreditCard },
   { to: '/search', label: 'Search', icon: Search },
   { to: '/quick-transactions', label: 'Quick Actions', icon: Zap },
-  { to: '/compare', label: 'Compare', icon: GitCompare, soon: true },
+  { to: '/compare', label: 'Compare', icon: GitCompare },
+  { to: '/chat', label: 'Chat', icon: MessageCircle },
   { to: '/help', label: 'Help', icon: HelpCircle },
 ]
 
@@ -47,8 +49,8 @@ export function Sidebar() {
               key={item.to}
               to={item.to}
               className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm ${active
-                  ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100'
+                ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100'
                 }`}
             >
               <Icon size={16} />

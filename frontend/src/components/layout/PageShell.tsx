@@ -6,6 +6,10 @@ import { SettingsSheet } from '@/components/layout/SettingsSheet'
 import { Alert } from '@/components/ui/alert'
 import { useAuthStore } from '@/store/authStore'
 import { useUIStore } from '@/store/uiStore'
+import { useCurrentUser } from '@/hooks/useAuth'
+import api from '@/lib/api'
+
+const CURRENCIES = ['INR', 'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'SGD', 'AED']
 
 /**
  * @description Page shell properties.
@@ -18,8 +22,11 @@ interface PageShellProps {
 export function PageShell({ title, children }: PageShellProps) {
   const [online, setOnline] = useState(navigator.onLine)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [selectedCurrency, setSelectedCurrency] = useState('INR')
+  const [savingCurrency, setSavingCurrency] = useState(false)
   const { user, isFirstTime, setFirstTime } = useAuthStore()
   const { theme, applyTheme } = useUIStore()
+  const { data: profile } = useCurrentUser()
 
   useEffect(() => {
     const onOnline = () => setOnline(true)
@@ -46,6 +53,20 @@ export function PageShell({ title, children }: PageShellProps) {
   }, [theme, applyTheme])
 
   const greetingName = useMemo(() => user?.displayName ?? user?.email ?? 'User', [user])
+  const userInitial = useMemo(() => {
+    const name = user?.displayName ?? user?.email ?? ''
+    return name.charAt(0).toUpperCase() || 'U'
+  }, [user])
+
+  async function handleSaveCurrency() {
+    setSavingCurrency(true)
+    try {
+      await api.patch('/users/me', { currency_code: selectedCurrency })
+      setFirstTime(false)
+    } finally {
+      setSavingCurrency(false)
+    }
+  }
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
@@ -58,7 +79,7 @@ export function PageShell({ title, children }: PageShellProps) {
             </Alert>
           </div>
         )}
-        <Topbar title={title} onOpenSettings={() => setSettingsOpen(true)} />
+        <Topbar title={title} onOpenSettings={() => setSettingsOpen(true)} userInitial={userInitial} />
         <div className="flex-1 p-6">{children}</div>
       </div>
 
@@ -66,7 +87,7 @@ export function PageShell({ title, children }: PageShellProps) {
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
         displayName={greetingName}
-        currencyCode={undefined}
+        currencyCode={profile?.currency_code}
       />
 
       {isFirstTime && (
@@ -76,11 +97,21 @@ export function PageShell({ title, children }: PageShellProps) {
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
               Choose your base currency once. It cannot be changed later.
             </p>
-            <button
-              className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm text-white dark:bg-slate-100 dark:text-slate-900"
-              onClick={() => setFirstTime(false)}
+            <select
+              value={selectedCurrency}
+              onChange={(e) => setSelectedCurrency(e.target.value)}
+              className="mt-3 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
             >
-              Continue
+              {CURRENCIES.map((code) => (
+                <option key={code} value={code}>{code}</option>
+              ))}
+            </select>
+            <button
+              className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm text-white disabled:opacity-60 dark:bg-slate-100 dark:text-slate-900"
+              onClick={handleSaveCurrency}
+              disabled={savingCurrency}
+            >
+              {savingCurrency ? 'Saving...' : 'Continue'}
             </button>
           </div>
         </div>

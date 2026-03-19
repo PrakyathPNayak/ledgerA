@@ -24,7 +24,7 @@ func NewQuickTransactionHandler(quickService service.QuickTransactionService, us
 func (h *QuickTransactionHandler) resolveUserID(c *gin.Context) (uuid.UUID, bool) {
 	uid, err := middleware.GetFirebaseUID(c)
 	if err != nil {
-		dto.Error(c, 401, "ERR_UNAUTHORIZED", err.Error())
+		dto.Error(c, 401, "ERR_UNAUTHORIZED", "unauthorized")
 		return uuid.Nil, false
 	}
 	user, err := h.userService.GetMe(c.Request.Context(), uid)
@@ -43,7 +43,7 @@ func (h *QuickTransactionHandler) List(c *gin.Context) {
 	}
 	items, total, err := h.quickService.List(c.Request.Context(), userID)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to list quick transactions")
 		return
 	}
 	responses := make([]dto.QuickTransactionResponse, 0, len(items))
@@ -66,7 +66,7 @@ func (h *QuickTransactionHandler) Create(c *gin.Context) {
 	}
 	item, err := h.quickService.Create(c.Request.Context(), userID, req)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to create quick transaction")
 		return
 	}
 	dto.Created(c, dto.NewQuickTransactionResponse(*item))
@@ -90,7 +90,7 @@ func (h *QuickTransactionHandler) Update(c *gin.Context) {
 	}
 	item, err := h.quickService.Update(c.Request.Context(), userID, id, req)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to update quick transaction")
 		return
 	}
 	dto.Success(c, dto.NewQuickTransactionResponse(*item))
@@ -108,7 +108,7 @@ func (h *QuickTransactionHandler) Delete(c *gin.Context) {
 		return
 	}
 	if err := h.quickService.Delete(c.Request.Context(), userID, id); err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to delete quick transaction")
 		return
 	}
 	c.Status(204)
@@ -128,7 +128,7 @@ func (h *QuickTransactionHandler) Execute(c *gin.Context) {
 	txDate := time.Now().Format("2006-01-02")
 	item, err := h.quickService.Execute(c.Request.Context(), userID, id, txDate)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to execute quick transaction")
 		return
 	}
 	dto.Created(c, dto.NewTransactionResponse(*item))
@@ -146,7 +146,7 @@ func (h *QuickTransactionHandler) Reorder(c *gin.Context) {
 		return
 	}
 	if err := h.quickService.Reorder(c.Request.Context(), userID, req.IDs); err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to reorder quick transactions")
 		return
 	}
 	c.Status(204)

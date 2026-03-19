@@ -24,7 +24,7 @@ func NewCategoryHandler(categoryService service.CategoryService, subcategoryServ
 func (h *CategoryHandler) resolveUserID(c *gin.Context) (uuid.UUID, bool) {
 	uid, err := middleware.GetFirebaseUID(c)
 	if err != nil {
-		dto.Error(c, 401, "ERR_UNAUTHORIZED", err.Error())
+		dto.Error(c, 401, "ERR_UNAUTHORIZED", "unauthorized")
 		return uuid.Nil, false
 	}
 	user, err := h.userService.GetMe(c.Request.Context(), uid)
@@ -43,14 +43,14 @@ func (h *CategoryHandler) List(c *gin.Context) {
 	}
 	categories, _, err := h.categoryService.List(c.Request.Context(), userID)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to list categories")
 		return
 	}
 	result := make([]dto.CategoryWithSubsResponse, 0, len(categories))
 	for _, category := range categories {
 		subs, _, subErr := h.subcategoryService.ListByCategory(c.Request.Context(), userID, category.ID)
 		if subErr != nil {
-			dto.Error(c, 500, "ERR_INTERNAL", subErr.Error())
+			dto.Error(c, 500, "ERR_INTERNAL", "failed to list subcategories")
 			return
 		}
 		subResponses := make([]dto.SubcategoryResponse, 0, len(subs))
@@ -75,7 +75,7 @@ func (h *CategoryHandler) Create(c *gin.Context) {
 	}
 	category, err := h.categoryService.Create(c.Request.Context(), userID, req)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to create category")
 		return
 	}
 	dto.Created(c, dto.NewCategoryResponse(*category))
@@ -99,7 +99,7 @@ func (h *CategoryHandler) Update(c *gin.Context) {
 	}
 	category, err := h.categoryService.Update(c.Request.Context(), userID, id, req)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to update category")
 		return
 	}
 	dto.Success(c, dto.NewCategoryResponse(*category))
@@ -117,7 +117,7 @@ func (h *CategoryHandler) Delete(c *gin.Context) {
 		return
 	}
 	if err := h.categoryService.Delete(c.Request.Context(), userID, id); err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to delete category")
 		return
 	}
 	c.Status(204)
@@ -141,7 +141,7 @@ func (h *CategoryHandler) CreateSubcategory(c *gin.Context) {
 	}
 	sub, err := h.subcategoryService.Create(c.Request.Context(), userID, categoryID, req)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to create subcategory")
 		return
 	}
 	dto.Created(c, dto.NewSubcategoryResponse(*sub))
@@ -165,7 +165,7 @@ func (h *CategoryHandler) UpdateSubcategory(c *gin.Context) {
 	}
 	sub, err := h.subcategoryService.Update(c.Request.Context(), userID, id, req)
 	if err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to update subcategory")
 		return
 	}
 	dto.Success(c, dto.NewSubcategoryResponse(*sub))
@@ -183,7 +183,7 @@ func (h *CategoryHandler) DeleteSubcategory(c *gin.Context) {
 		return
 	}
 	if err := h.subcategoryService.Delete(c.Request.Context(), userID, id); err != nil {
-		dto.Error(c, 500, "ERR_INTERNAL", err.Error())
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to delete subcategory")
 		return
 	}
 	c.Status(204)

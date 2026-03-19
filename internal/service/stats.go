@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"ledgerA/internal/dto"
 	"ledgerA/internal/repository"
+	"ledgerA/pkg/pdf"
 	"sort"
 	"time"
 
@@ -215,4 +216,196 @@ func buildBreakdownItems(values map[statsBreakdownKey]float64, total float64) []
 	})
 
 	return items
+}
+
+func (s *statsService) ExportPDF(ctx context.Context, userID uuid.UUID, query dto.StatsQuery) ([]byte, error) {
+	summary, err := s.Summary(ctx, userID, query)
+	if err != nil {
+		return nil, fmt.Errorf("statsService.ExportPDF.Summary: %w", err)
+	}
+
+	accountName := "All Accounts"
+	if query.AccountID != nil && *query.AccountID != "" && *query.AccountID != "all" {
+		// Account name is not critical for PDF; use ID as fallback
+		accountName = *query.AccountID
+	}
+
+	from, to, err := parseStatsRange(query.Period, query.Value)
+	if err != nil {
+		return nil, fmt.Errorf("statsService.ExportPDF.Range: %w", err)
+	}
+
+	filter := repository.TransactionListFilter{
+		Type: "all", SortBy: "transaction_date", SortDir: "asc",
+		Page: 1, PerPage: 5000, DateFrom: &from, DateTo: &to,
+	}
+	if query.AccountID != nil && *query.AccountID != "" && *query.AccountID != "all" {
+		parsedID, parseErr := uuid.Parse(*query.AccountID)
+		if parseErr == nil {
+			filter.AccountID = &parsedID
+		}
+	}
+
+	items, _, err := s.txRepo.ListByUserID(ctx, userID, filter)
+	if err != nil {
+		return nil, fmt.Errorf("statsService.ExportPDF.List: %w", err)
+	}
+
+	categoryNames := s.buildCategoryNames(ctx, userID)
+	subcategoryNames := s.buildSubcategoryNames(ctx, userID)
+
+	breakdownRows := make([]pdf.CategoryBreakdownRow, 0)
+	for _, item := range summary.CategoryBreakdownExpense {
+		breakdownRows = append(breakdownRows, pdf.CategoryBreakdownRow{
+			Category: item.Category, Subcategory: item.Subcategory,
+			Amount: item.Amount, Percentage: item.Percentage, Type: "expense",
+		})
+	}
+	for _, item := range summary.CategoryBreakdownIncome {
+		breakdownRows = append(breakdownRows, pdf.CategoryBreakdownRow{
+			Category: item.Category, Subcategory: item.Subcategory,
+			Amount: item.Amount, Percentage: item.Percentage, Type: "income",
+		})
+	}
+
+	txRows := make([]pdf.TransactionRow, 0, len(items))
+	for _, item := range items {
+		catName := categoryNames[item.CategoryID]
+		if catName == "" {
+			catName = "Uncategorized"
+		}
+		subName := subcategoryNames[item.SubcategoryID]
+		notes := ""
+		if item.Notes != nil {
+			notes = *item.Notes
+		}
+		txRows = append(txRows, pdf.TransactionRow{
+			Date:        item.TransactionDate.Format("2006-01-02"),
+			Name:        item.Name,
+			Category:    catName,
+			Subcategory: subName,
+			Amount:      item.Amount,
+			Notes:       notes,
+		})
+	}
+
+	periodLabel := fmt.Sprintf("%s: %s", query.Period, query.Value)
+
+	pdfData := pdf.StatsPDFData{
+		PeriodLabel:   periodLabel,
+		AccountName:   accountName,
+		CurrencyCode:  "INR",
+		TotalIncome:   summary.TotalIncome,
+		TotalExpense:  summary.TotalExpense,
+		Net:           summary.Net,
+		BreakdownRows: breakdownRows,
+		Transactions:  txRows,
+	}
+
+	result, err := pdf.GenerateStatsPDF(pdfData)
+	if err != nil {
+		return nil, fmt.Errorf("statsService.ExportPDF.Generate: %w", err)
+	}
+	return result, nil
+}
+
+func (s *statsService) Compare(ctx context.Context, userID uuid.UUID, query dto.CompareQuery) (*dto.CompareResponse, error) {
+	summary1, err := s.Summary(ctx, userID, dto.StatsQuery{
+		Period: query.Period, Value: query.Value1, AccountID: query.AccountID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("statsService.Compare.Period1: %w", err)
+	}
+
+	summary2, err := s.Summary(ctx, userID, dto.StatsQuery{
+		Period: query.Period, Value: query.Value2, AccountID: query.AccountID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("statsService.Compare.Period2: %w", err)
+	}
+
+	topN := 5
+	p1TopExpense := summary1.CategoryBreakdownExpense
+	if len(p1TopExpense) > topN {
+		p1TopExpense = p1TopExpense[:topN]
+	}
+	p1TopIncome := summary1.CategoryBreakdownIncome
+	if len(p1TopIncome) > topN {
+		p1TopIncome = p1TopIncome[:topN]
+	}
+	p2TopExpense := summary2.CategoryBreakdownExpense
+	if len(p2TopExpense) > topN {
+		p2TopExpense = p2TopExpense[:topN]
+	}
+	p2TopIncome := summary2.CategoryBreakdownIncome
+	if len(p2TopIncome) > topN {
+		p2TopIncome = p2TopIncome[:topN]
+	}
+
+	incomeChange := 0.0
+	if summary1.TotalIncome > 0 {
+		incomeChange = ((summary2.TotalIncome - summary1.TotalIncome) / summary1.TotalIncome) * 100
+	}
+	expenseChange := 0.0
+	if summary1.TotalExpense > 0 {
+		expenseChange = ((summary2.TotalExpense - summary1.TotalExpense) / summary1.TotalExpense) * 100
+	}
+
+	return &dto.CompareResponse{
+		Period1: dto.ComparePeriodData{
+			Label:        query.Value1,
+			TotalIncome:  summary1.TotalIncome,
+			TotalExpense: summary1.TotalExpense,
+			Net:          summary1.Net,
+			TopExpense:   p1TopExpense,
+			TopIncome:    p1TopIncome,
+		},
+		Period2: dto.ComparePeriodData{
+			Label:        query.Value2,
+			TotalIncome:  summary2.TotalIncome,
+			TotalExpense: summary2.TotalExpense,
+			Net:          summary2.Net,
+			TopExpense:   p2TopExpense,
+			TopIncome:    p2TopIncome,
+		},
+		IncomeChange:  incomeChange,
+		ExpenseChange: expenseChange,
+		NetChange:     summary2.Net - summary1.Net,
+	}, nil
+}
+
+func (s *statsService) buildCategoryNames(ctx context.Context, userID uuid.UUID) map[uuid.UUID]string {
+	names := map[uuid.UUID]string{}
+	if s.catRepo == nil {
+		return names
+	}
+	categories, _, err := s.catRepo.ListByUserID(ctx, userID)
+	if err != nil {
+		return names
+	}
+	for _, c := range categories {
+		names[c.ID] = c.Name
+	}
+	return names
+}
+
+func (s *statsService) buildSubcategoryNames(ctx context.Context, userID uuid.UUID) map[uuid.UUID]string {
+	names := map[uuid.UUID]string{}
+	if s.catRepo == nil || s.subRepo == nil {
+		return names
+	}
+	categories, _, err := s.catRepo.ListByUserID(ctx, userID)
+	if err != nil {
+		return names
+	}
+	for _, c := range categories {
+		subs, _, subErr := s.subRepo.ListByCategoryID(ctx, userID, c.ID)
+		if subErr != nil {
+			continue
+		}
+		for _, sub := range subs {
+			names[sub.ID] = sub.Name
+		}
+	}
+	return names
 }

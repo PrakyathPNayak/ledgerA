@@ -22,13 +22,13 @@ func NewUserHandler(userService service.UserService) *UserHandler {
 func (h *UserHandler) Me(c *gin.Context) {
 	uid, err := middleware.GetFirebaseUID(c)
 	if err != nil {
-		dto.Error(c, 401, "ERR_UNAUTHORIZED", err.Error())
+		dto.Error(c, 401, "ERR_UNAUTHORIZED", "unauthorized")
 		return
 	}
 
 	user, err := h.userService.GetMe(c.Request.Context(), uid)
 	if err != nil {
-		dto.Error(c, 404, "ERR_NOT_FOUND", err.Error())
+		dto.Error(c, 404, "ERR_NOT_FOUND", "user not found")
 		return
 	}
 

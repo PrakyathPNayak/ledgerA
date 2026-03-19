@@ -87,13 +87,36 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
         [categories, categoryId],
     )
 
+    function resetForm() {
+        setKind('expense')
+        setAccountId('')
+        setCategoryId('')
+        setSubcategoryId('')
+        setName('')
+        setAmount('')
+        setTransactionDate(formatDate(new Date()))
+        setNotes('')
+        setIsScheduled(false)
+        setNewAccountName('')
+        setNewAccountOpeningBalance('0')
+        setNewCategoryName('')
+        setNewSubcategoryName('')
+        setInlineCreateError(null)
+        setTransactionError(null)
+    }
+
+    function handleClose() {
+        resetForm()
+        onClose()
+    }
+
     const createTransaction = useMutation({
         mutationFn: (payload: CreateTransactionPayload) => api.post('/transactions', payload),
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ['transactions'] })
             setTransactionError(null)
             onCreated?.()
-            onClose()
+            handleClose()
         },
     })
 
@@ -193,12 +216,12 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4">
-            <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white shadow-xl">
-                <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
-                    <h2 className="text-xl font-semibold text-slate-900">Add Transaction</h2>
+            <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
+                <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-slate-700">
+                    <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Add Transaction</h2>
                     <button
                         type="button"
-                        onClick={onClose}
+                        onClick={handleClose}
                         className="rounded-md px-3 py-1.5 text-sm text-slate-500 hover:bg-slate-100"
                     >
                         Close
@@ -420,7 +443,7 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
                     <div className="flex justify-end gap-2 border-t border-slate-200 pt-4">
                         <button
                             type="button"
-                            onClick={onClose}
+                            onClick={handleClose}
                             className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-700"
                         >
                             Cancel

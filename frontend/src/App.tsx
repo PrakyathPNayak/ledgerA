@@ -1,6 +1,7 @@
 import { Navigate, Outlet, createBrowserRouter } from 'react-router-dom'
 
 import { AccountsPage } from '@/pages/AccountsPage'
+import { ChatPage } from '@/pages/ChatPage'
 import { ComparePage } from '@/pages/ComparePage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { HelpPage } from '@/pages/HelpPage'
@@ -34,6 +35,7 @@ export const appRouter = createBrowserRouter([
             { path: '/search', element: <SearchPage /> },
             { path: '/quick-transactions', element: <QuickTransactionsPage /> },
             { path: '/compare', element: <ComparePage /> },
+            { path: '/chat', element: <ChatPage /> },
             { path: '/help', element: <HelpPage /> },
         ],
     },
