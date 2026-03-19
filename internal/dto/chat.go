@@ -7,12 +7,14 @@ type ChatRequest struct {
 
 // ChatAction describes a parsed action from the user's message.
 type ChatAction struct {
-	Type         string  `json:"type"`
-	Name         string  `json:"name,omitempty"`
-	Amount       float64 `json:"amount,omitempty"`
-	Account      string  `json:"account,omitempty"`
-	Category     string  `json:"category,omitempty"`
-	Date         string  `json:"date,omitempty"`
+	Type            string  `json:"type"`
+	Name            string  `json:"name,omitempty"`
+	Amount          float64 `json:"amount,omitempty"`
+	Account         string  `json:"account,omitempty"`
+	ToAccount       string  `json:"to_account,omitempty"`
+	Category        string  `json:"category,omitempty"`
+	Date            string  `json:"date,omitempty"`
+	TransactionID   string  `json:"transaction_id,omitempty"`
 }
 
 // ChatResponse contains the assistant reply and any executed action.

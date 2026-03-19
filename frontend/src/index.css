@@ -6,19 +6,31 @@
 :root {
     color-scheme: light;
 
-    --color-bg-app: #f4f4f5;          /* page backdrop */
-    --color-bg-surface: #ffffff;       /* cards / panels */
-    --color-bg-elevated: #f4f4f5;     /* nested surfaces, inputs */
-    --color-bg-hover: #e4e4e7;        /* hover states */
-    --color-border: #d4d4d8;          /* default border */
-    --color-border-subtle: #e4e4e7;   /* softer borders */
-    --color-text: #18181b;            /* primary text */
-    --color-text-secondary: #52525b;  /* supporting text */
-    --color-text-muted: #a1a1aa;      /* subtle / placeholder */
-    --color-accent: #3b82f6;          /* primary accent */
-    --color-positive: #059669;        /* income / success */
+    --color-bg-app: #f4f4f5;
+    /* page backdrop */
+    --color-bg-surface: #ffffff;
+    /* cards / panels */
+    --color-bg-elevated: #f4f4f5;
+    /* nested surfaces, inputs */
+    --color-bg-hover: #e4e4e7;
+    /* hover states */
+    --color-border: #d4d4d8;
+    /* default border */
+    --color-border-subtle: #e4e4e7;
+    /* softer borders */
+    --color-text: #18181b;
+    /* primary text */
+    --color-text-secondary: #52525b;
+    /* supporting text */
+    --color-text-muted: #a1a1aa;
+    /* subtle / placeholder */
+    --color-accent: #3b82f6;
+    /* primary accent */
+    --color-positive: #059669;
+    /* income / success */
     --color-positive-muted: #d1fae5;
-    --color-negative: #dc2626;        /* expense / danger */
+    --color-negative: #dc2626;
+    /* expense / danger */
     --color-negative-muted: #fee2e2;
 }
 
