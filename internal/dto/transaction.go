@@ -20,6 +20,24 @@ type CreateTransactionRequest struct {
 	IsScheduled     bool       `json:"is_scheduled"`
 }
 
+// TransferRequest contains self-transfer payload between two accounts.
+type TransferRequest struct {
+	FromAccountID   uuid.UUID  `json:"from_account_id" binding:"required" validate:"required"`
+	ToAccountID     uuid.UUID  `json:"to_account_id" binding:"required" validate:"required"`
+	CategoryID      uuid.UUID  `json:"category_id" binding:"required" validate:"required"`
+	SubcategoryID   *uuid.UUID `json:"subcategory_id,omitempty"`
+	Amount          float64    `json:"amount" binding:"required,gt=0" validate:"required,gt=0"`
+	TransactionDate string     `json:"transaction_date" binding:"required" validate:"required,datetime=2006-01-02"`
+	Name            string     `json:"name" binding:"required" validate:"required,min=1,max=200"`
+	Notes           *string    `json:"notes,omitempty" validate:"omitempty,max=2000"`
+}
+
+// TransferResponse contains the two transactions created by a transfer.
+type TransferResponse struct {
+	Debit  TransactionResponse `json:"debit"`
+	Credit TransactionResponse `json:"credit"`
+}
+
 // UpdateTransactionRequest contains transaction update payload.
 type UpdateTransactionRequest struct {
 	AccountID       *uuid.UUID `json:"account_id,omitempty"`

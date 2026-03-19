@@ -144,3 +144,25 @@ func (h *TransactionHandler) Delete(c *gin.Context) {
 	}
 	c.Status(204)
 }
+
+// Transfer handles POST /api/v1/transfers.
+func (h *TransactionHandler) Transfer(c *gin.Context) {
+	userID, ok := h.resolveUserID(c)
+	if !ok {
+		return
+	}
+	var req dto.TransferRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		dto.Error(c, 422, "ERR_VALIDATION", err.Error())
+		return
+	}
+	debit, credit, err := h.transactionService.Transfer(c.Request.Context(), userID, req)
+	if err != nil {
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to process transfer")
+		return
+	}
+	dto.Created(c, dto.TransferResponse{
+		Debit:  dto.NewTransactionResponse(*debit),
+		Credit: dto.NewTransactionResponse(*credit),
+	})
+}

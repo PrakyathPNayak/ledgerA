@@ -213,6 +213,110 @@ func (s *transactionService) Delete(ctx context.Context, userID uuid.UUID, id uu
 	return nil
 }
 
+func (s *transactionService) Transfer(ctx context.Context, userID uuid.UUID, req dto.TransferRequest) (*model.Transaction, *model.Transaction, error) {
+	if req.FromAccountID == req.ToAccountID {
+		return nil, nil, fmt.Errorf("transactionService.Transfer: source and destination accounts must differ")
+	}
+	if req.Amount <= 0 {
+		return nil, nil, fmt.Errorf("transactionService.Transfer: amount must be positive")
+	}
+
+	if _, err := s.accountRepo.FindByID(ctx, userID, req.FromAccountID); err != nil {
+		return nil, nil, fmt.Errorf("transactionService.Transfer.FromAccount: %w", err)
+	}
+	if _, err := s.accountRepo.FindByID(ctx, userID, req.ToAccountID); err != nil {
+		return nil, nil, fmt.Errorf("transactionService.Transfer.ToAccount: %w", err)
+	}
+
+	txDate, err := dto.ParseTransactionDate(req.TransactionDate)
+	if err != nil {
+		return nil, nil, fmt.Errorf("transactionService.Transfer.Date: %w", err)
+	}
+
+	var subID uuid.UUID
+	if req.SubcategoryID != nil {
+		subID = *req.SubcategoryID
+	} else {
+		category, catErr := s.catRepo.FindByID(ctx, userID, req.CategoryID)
+		if catErr != nil {
+			return nil, nil, fmt.Errorf("transactionService.Transfer.Category: %w", catErr)
+		}
+		sub, subErr := s.subRepo.FindByNameForCategory(ctx, userID, req.CategoryID, category.Name)
+		if subErr != nil {
+			sub = &model.Subcategory{UserID: userID, CategoryID: req.CategoryID, Name: category.Name}
+			if createErr := s.subRepo.Create(ctx, sub); createErr != nil {
+				if isDuplicateKeyError(createErr) {
+					existing, findErr := s.subRepo.FindByNameForCategory(ctx, userID, req.CategoryID, category.Name)
+					if findErr != nil {
+						return nil, nil, fmt.Errorf("transactionService.Transfer.SubcategoryAutoCreate.FindExisting: %w", findErr)
+					}
+					sub = existing
+				} else {
+					return nil, nil, fmt.Errorf("transactionService.Transfer.SubcategoryAutoCreate: %w", createErr)
+				}
+			}
+		}
+		subID = sub.ID
+	}
+
+	debit := model.Transaction{
+		UserID:          userID,
+		AccountID:       req.FromAccountID,
+		CategoryID:      req.CategoryID,
+		SubcategoryID:   subID,
+		Name:            req.Name,
+		Amount:          -req.Amount,
+		TransactionDate: txDate,
+		Notes:           req.Notes,
+	}
+
+	credit := model.Transaction{
+		UserID:          userID,
+		AccountID:       req.ToAccountID,
+		CategoryID:      req.CategoryID,
+		SubcategoryID:   subID,
+		Name:            req.Name,
+		Amount:          req.Amount,
+		TransactionDate: txDate,
+		Notes:           req.Notes,
+	}
+
+	if err := s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		txRepo := repository.NewTransactionRepository(tx)
+		accountRepo := repository.NewAccountRepository(tx)
+		auditRepo := repository.NewAuditRepository(tx)
+
+		if err := txRepo.Create(ctx, &debit); err != nil {
+			return fmt.Errorf("transactionService.Transfer.CreateDebit: %w", err)
+		}
+		if err := txRepo.Create(ctx, &credit); err != nil {
+			return fmt.Errorf("transactionService.Transfer.CreateCredit: %w", err)
+		}
+		if err := accountRepo.UpdateBalance(ctx, userID, req.FromAccountID, -req.Amount); err != nil {
+			return fmt.Errorf("transactionService.Transfer.DebitBalance: %w", err)
+		}
+		if err := accountRepo.UpdateBalance(ctx, userID, req.ToAccountID, req.Amount); err != nil {
+			return fmt.Errorf("transactionService.Transfer.CreditBalance: %w", err)
+		}
+
+		for _, item := range []model.Transaction{debit, credit} {
+			diffBytes, marshalErr := json.Marshal(map[string]any{"before": nil, "after": item})
+			if marshalErr != nil {
+				return fmt.Errorf("transactionService.Transfer.Marshal: %w", marshalErr)
+			}
+			entry := model.AuditLog{UserID: userID, EntityType: "transaction", EntityID: item.ID, Action: "create", Diff: string(diffBytes)}
+			if err := auditRepo.Create(ctx, &entry); err != nil {
+				return fmt.Errorf("transactionService.Transfer.Audit: %w", err)
+			}
+		}
+		return nil
+	}); err != nil {
+		return nil, nil, fmt.Errorf("transactionService.Transfer.Tx: %w", err)
+	}
+
+	return &debit, &credit, nil
+}
+
 func toRepoFilter(filters dto.TransactionFilters) (repository.TransactionListFilter, error) {
 	repoFilter := repository.TransactionListFilter{
 		AccountID:     filters.AccountID,

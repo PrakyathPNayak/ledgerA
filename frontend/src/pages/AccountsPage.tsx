@@ -3,6 +3,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 
 import { PageShell } from '@/components/layout/PageShell'
+import { TransferModal } from '@/components/shared/TransferModal'
 import { useAccounts, useCreateAccount } from '@/hooks/useAccounts'
 
 function money(value: number): string {
@@ -14,6 +15,7 @@ export function AccountsPage() {
     const createAccount = useCreateAccount()
 
     const [showForm, setShowForm] = useState(false)
+    const [showTransfer, setShowTransfer] = useState(false)
     const [name, setName] = useState('')
     const [openingBalance, setOpeningBalance] = useState('0')
     const [error, setError] = useState<string | null>(null)
@@ -55,6 +57,13 @@ export function AccountsPage() {
                     <h2 className="text-lg font-semibold text-foreground">All Accounts</h2>
                     <div className="flex items-center gap-3">
                         <p className="text-sm text-muted">{accounts.length} accounts</p>
+                        <button
+                            type="button"
+                            onClick={() => setShowTransfer(true)}
+                            className="rounded-lg border border-border px-3 py-2 text-sm font-medium text-secondary"
+                        >
+                            Transfer
+                        </button>
                         <button
                             type="button"
                             onClick={() => {
@@ -122,6 +131,8 @@ export function AccountsPage() {
                     ))}
                 </div>
             </section>
+
+            <TransferModal isOpen={showTransfer} onClose={() => setShowTransfer(false)} />
         </PageShell>
     )
 }

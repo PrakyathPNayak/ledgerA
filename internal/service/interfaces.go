@@ -49,6 +49,7 @@ type TransactionService interface {
 	Create(ctx context.Context, userID uuid.UUID, req dto.CreateTransactionRequest) (*model.Transaction, error)
 	Update(ctx context.Context, userID uuid.UUID, id uuid.UUID, req dto.UpdateTransactionRequest) (*model.Transaction, error)
 	Delete(ctx context.Context, userID uuid.UUID, id uuid.UUID) error
+	Transfer(ctx context.Context, userID uuid.UUID, req dto.TransferRequest) (*model.Transaction, *model.Transaction, error)
 }
 
 // QuickTransactionService defines quick transaction business logic.

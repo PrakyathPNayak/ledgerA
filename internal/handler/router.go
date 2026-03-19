@@ -70,6 +70,8 @@ func SetupRouter(deps RouterDependencies) *gin.Engine {
 			protected.PATCH("/transactions/:id", deps.TransactionHandler.Update)
 			protected.DELETE("/transactions/:id", deps.TransactionHandler.Delete)
 
+			protected.POST("/transfers", deps.TransactionHandler.Transfer)
+
 			protected.GET("/quick-transactions", deps.QuickTransactionHandler.List)
 			protected.POST("/quick-transactions", deps.QuickTransactionHandler.Create)
 			protected.PATCH("/quick-transactions/:id", deps.QuickTransactionHandler.Update)
