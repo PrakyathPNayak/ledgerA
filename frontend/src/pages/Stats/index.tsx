@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
     Bar,
     CartesianGrid,
@@ -332,6 +332,75 @@ export function StatsPage() {
                         </div>
                     </article>
                 </section>
+
+                {/* Category breakdown tables */}
+                {!isLoading && (stats?.category_breakdown_expense?.length ?? 0) > 0 && (
+                    <section className="grid gap-4 lg:grid-cols-2">
+                        <article className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+                            <h2 className="mb-3 text-base font-semibold text-foreground">Top Expense Categories</h2>
+                            <table className="w-full text-sm">
+                                <thead>
+                                    <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
+                                        <th className="pb-2">Category</th>
+                                        <th className="pb-2 text-right">Amount</th>
+                                        <th className="pb-2 text-right">Share</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {(stats?.category_breakdown_expense ?? []).slice(0, 8).map((item, idx) => (
+                                        <tr key={idx} className="border-b border-border last:border-0">
+                                            <td className="py-1.5 pr-2">
+                                                <span className="font-medium text-foreground">{item.category}</span>
+                                                {item.subcategory !== item.category && (
+                                                    <span className="ml-1 text-xs text-muted">/ {item.subcategory}</span>
+                                                )}
+                                            </td>
+                                            <td className="py-1.5 text-right text-negative">{formatMoney(item.amount)}</td>
+                                            <td className="py-1.5 text-right text-muted">{item.percentage.toFixed(1)}%</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </article>
+
+                        <article className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+                            <h2 className="mb-3 text-base font-semibold text-foreground">Top Income Categories</h2>
+                            <table className="w-full text-sm">
+                                <thead>
+                                    <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
+                                        <th className="pb-2">Category</th>
+                                        <th className="pb-2 text-right">Amount</th>
+                                        <th className="pb-2 text-right">Share</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {(stats?.category_breakdown_income ?? []).slice(0, 8).map((item, idx) => (
+                                        <tr key={idx} className="border-b border-border last:border-0">
+                                            <td className="py-1.5 pr-2">
+                                                <span className="font-medium text-foreground">{item.category}</span>
+                                                {item.subcategory !== item.category && (
+                                                    <span className="ml-1 text-xs text-muted">/ {item.subcategory}</span>
+                                                )}
+                                            </td>
+                                            <td className="py-1.5 text-right text-positive">{formatMoney(item.amount)}</td>
+                                            <td className="py-1.5 text-right text-muted">{item.percentage.toFixed(1)}%</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </article>
+                    </section>
+                )}
+
+                {/* Link to full monthly reports */}
+                <div className="flex justify-end">
+                    <Link
+                        to="/reports"
+                        className="text-sm font-medium text-accent hover:underline"
+                    >
+                        View full monthly reports →
+                    </Link>
+                </div>
             </div>
         </PageShell>
     )
