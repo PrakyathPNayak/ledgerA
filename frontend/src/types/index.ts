@@ -20,6 +20,7 @@ export interface Account {
     account_type: string
     opening_balance: number
     current_balance: number
+    is_archived: boolean
     created_at: string
     updated_at: string
     last_transaction_date?: string

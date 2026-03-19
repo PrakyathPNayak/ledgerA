@@ -54,7 +54,12 @@ func (s *accountService) Update(ctx context.Context, userID uuid.UUID, id uuid.U
 		return nil, fmt.Errorf("accountService.Update.Find: %w", err)
 	}
 	before := *account
-	account.Name = req.Name
+	if req.Name != "" {
+		account.Name = req.Name
+	}
+	if req.IsArchived != nil {
+		account.IsArchived = *req.IsArchived
+	}
 	if err := s.accountRepo.Update(ctx, account); err != nil {
 		return nil, fmt.Errorf("accountService.Update.Save: %w", err)
 	}

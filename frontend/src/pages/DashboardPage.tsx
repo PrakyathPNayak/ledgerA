@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 import { PageShell } from '@/components/layout/PageShell'
 import { AddTransactionModal } from '@/components/shared/AddTransactionModal'
@@ -10,6 +11,7 @@ import { useAccounts } from '@/hooks/useAccounts'
 import { useCategories } from '@/hooks/useCategories'
 import { useStats } from '@/hooks/useStats'
 import { useTransactions, useDeleteTransaction } from '@/hooks/useTransactions'
+import { useBudgetProgress } from '@/hooks/useBudgets'
 import type { Transaction } from '@/types'
 
 const tableColumns = [
@@ -35,6 +37,8 @@ export function DashboardPage() {
     const { data: accounts = [] } = useAccounts()
     const { data: categories = [] } = useCategories()
     const { data: stats } = useStats({ period: 'month', value: new Date().toISOString().slice(0, 7) })
+    const { data: budgetProgressRaw = [] } = useBudgetProgress()
+    const budgetProgress = Array.isArray(budgetProgressRaw) ? budgetProgressRaw : []
     const deleteMutation = useDeleteTransaction()
 
     const accountMap = useMemo(() => Object.fromEntries(accounts.map((item) => [item.id, item.name])), [accounts])
@@ -67,6 +71,38 @@ export function DashboardPage() {
                     <StatCard label="Expense" value={money(stats?.total_expense ?? 0)} tone="expense" />
                     <StatCard label="Net" value={money(stats?.net ?? 0)} tone="neutral" />
                 </section>
+
+                {budgetProgress.length > 0 && (
+                    <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+                        <div className="mb-3 flex items-center justify-between">
+                            <h2 className="text-base font-semibold text-foreground">Monthly Budgets</h2>
+                            <Link to="/budgets" className="text-xs text-accent hover:underline">View all →</Link>
+                        </div>
+                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            {budgetProgress.map((b) => {
+                                const cat = categories.find((c) => c.id === b.category_id)?.name ?? '—'
+                                const over = b.percent > 100
+                                return (
+                                    <div key={b.id} className="rounded-xl border border-border bg-elevated p-3">
+                                        <div className="flex items-center justify-between mb-1">
+                                            <span className="text-xs font-medium text-foreground">{cat}</span>
+                                            <span className={`text-xs font-semibold ${over ? 'text-negative' : 'text-muted'}`}>
+                                                {b.percent.toFixed(0)}%
+                                            </span>
+                                        </div>
+                                        <div className="h-1.5 w-full rounded-full bg-surface">
+                                            <div
+                                                className={`h-1.5 rounded-full ${over ? 'bg-[var(--negative)]' : 'bg-[var(--accent)]'}`}
+                                                style={{ width: `${Math.min(b.percent, 100)}%` }}
+                                            />
+                                        </div>
+                                        <p className="mt-1 text-xs text-muted">{money(b.spent)} of {money(b.amount)}</p>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </section>
+                )}
 
                 <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
                     <div className="mb-4 flex items-center justify-between">

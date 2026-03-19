@@ -45,6 +45,18 @@ export function useUpdateAccount() {
 }
 
 /**
+ * @description Toggles archive status of an account.
+ */
+export function useArchiveAccount() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (payload: { id: string; is_archived: boolean }) =>
+      api.patch(`/accounts/${payload.id}`, { is_archived: payload.is_archived }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: accountQueryKeys.all }),
+  })
+}
+
+/**
  * @description Soft deletes an account.
  * @returns Account delete mutation.
  */

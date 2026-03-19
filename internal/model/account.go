@@ -10,4 +10,5 @@ type Account struct {
 	AccountType    string    `gorm:"type:text;not null;default:'general'"`
 	OpeningBalance float64   `gorm:"type:numeric(20,4);not null;default:0"`
 	CurrentBalance float64   `gorm:"type:numeric(20,4);not null;default:0"`
+	IsArchived     bool      `gorm:"type:boolean;not null;default:false"`
 }

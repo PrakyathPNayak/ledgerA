@@ -14,7 +14,8 @@ type CreateAccountRequest struct {
 
 // UpdateAccountRequest contains account update payload.
 type UpdateAccountRequest struct {
-	Name string `json:"name" binding:"required" validate:"required,min=1,max=120"`
+	Name       string `json:"name" validate:"omitempty,min=1,max=120"`
+	IsArchived *bool  `json:"is_archived,omitempty"`
 }
 
 // AccountResponse contains account data sent to clients.
@@ -25,6 +26,7 @@ type AccountResponse struct {
 	AccountType    string    `json:"account_type"`
 	OpeningBalance float64   `json:"opening_balance"`
 	CurrentBalance float64   `json:"current_balance"`
+	IsArchived     bool      `json:"is_archived"`
 	CreatedAt      string    `json:"created_at"`
 	UpdatedAt      string    `json:"updated_at"`
 }
@@ -55,6 +57,7 @@ func NewAccountResponse(account model.Account) AccountResponse {
 		AccountType:    account.AccountType,
 		OpeningBalance: account.OpeningBalance,
 		CurrentBalance: account.CurrentBalance,
+		IsArchived:     account.IsArchived,
 		CreatedAt:      account.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
 		UpdatedAt:      account.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
 	}
