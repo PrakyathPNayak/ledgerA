@@ -98,3 +98,24 @@ func (h *StatsHandler) Compare(c *gin.Context) {
 	}
 	dto.Success(c, result)
 }
+
+// Monthly handles GET /api/v1/stats/monthly.
+func (h *StatsHandler) Monthly(c *gin.Context) {
+	userID, ok := h.resolveUserID(c)
+	if !ok {
+		return
+	}
+
+	var query dto.MonthlyQuery
+	if err := c.ShouldBindQuery(&query); err != nil {
+		dto.Error(c, 400, "ERR_BAD_REQUEST", "invalid query parameters")
+		return
+	}
+
+	result, err := h.statsService.Monthly(c.Request.Context(), userID, query)
+	if err != nil {
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to generate monthly report")
+		return
+	}
+	dto.Success(c, result)
+}

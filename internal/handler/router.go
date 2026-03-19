@@ -97,6 +97,7 @@ func SetupRouter(deps RouterDependencies) *gin.Engine {
 			protected.GET("/stats/summary", deps.StatsHandler.Summary)
 			protected.GET("/stats/export/pdf", deps.StatsHandler.ExportPDF)
 			protected.GET("/stats/compare", deps.StatsHandler.Compare)
+			protected.GET("/stats/monthly", deps.StatsHandler.Monthly)
 
 			protected.GET("/audit", deps.AuditHandler.List)
 

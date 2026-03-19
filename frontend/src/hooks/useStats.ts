@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 
 import api from '@/lib/api'
-import type { CompareFilters, CompareResponse, StatsFilters, StatsSummary } from '@/types'
+import type { CompareFilters, CompareResponse, MonthlyFilters, MonthlyReport, StatsFilters, StatsSummary } from '@/types'
 
 export const statsQueryKeys = {
     all: ['stats'] as const,
     detail: (filters: StatsFilters) => ['stats', filters] as const,
     compare: (filters: CompareFilters) => ['stats', 'compare', filters] as const,
+    monthly: (filters: MonthlyFilters) => ['stats', 'monthly', filters] as const,
 }
 
 /**
@@ -34,5 +35,16 @@ export function useCompare(filters: CompareFilters) {
         queryFn: () => api.get('/stats/compare', { params: filters }),
         enabled: hasValidFilters,
         staleTime: 60 * 1000,
+    })
+}
+
+/**
+ * @description Fetches monthly income/expense report.
+ */
+export function useMonthlyReport(filters: MonthlyFilters) {
+    return useQuery<MonthlyReport>({
+        queryKey: statsQueryKeys.monthly(filters),
+        queryFn: () => api.get('/stats/monthly', { params: filters }),
+        staleTime: 5 * 60 * 1000,
     })
 }

@@ -206,3 +206,21 @@ export interface BudgetProgress extends Budget {
     remaining: number
     percent: number
 }
+
+export interface MonthlyDataPoint {
+    month: string
+    total_income: number
+    total_expense: number
+    net: number
+    top_expense: CategoryBreakdownItem[]
+    top_income: CategoryBreakdownItem[]
+}
+
+export interface MonthlyReport {
+    months: MonthlyDataPoint[]
+}
+
+export interface MonthlyFilters {
+    months?: number
+    account_id?: string
+}

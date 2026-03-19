@@ -9,6 +9,7 @@ import { HelpPage } from '@/pages/HelpPage'
 import { PassbookPage } from '@/pages/PassbookPage'
 import { QuickTransactionsPage } from '@/pages/QuickTransactionsPage'
 import { RecurringPage } from '@/pages/RecurringPage'
+import { ReportsPage } from '@/pages/ReportsPage'
 import { SearchPage } from '@/pages/SearchPage'
 import { StatsPage } from '@/pages/Stats'
 import { LoginPage } from '@/pages/auth/Login'
@@ -38,6 +39,7 @@ export const appRouter = createBrowserRouter([
             { path: '/quick-transactions', element: <QuickTransactionsPage /> },
             { path: '/recurring', element: <RecurringPage /> },
             { path: '/budgets', element: <BudgetsPage /> },
+            { path: '/reports', element: <ReportsPage /> },
             { path: '/compare', element: <ComparePage /> },
             { path: '/chat', element: <ChatPage /> },
             { path: '/help', element: <HelpPage /> },

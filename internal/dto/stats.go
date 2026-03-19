@@ -58,3 +58,24 @@ type CompareResponse struct {
 	ExpenseChange    float64           `json:"expense_change_pct"`
 	NetChange        float64           `json:"net_change"`
 }
+
+// MonthlyQuery contains query params for monthly report.
+type MonthlyQuery struct {
+	Months    int     `form:"months"`
+	AccountID *string `form:"account_id,omitempty"`
+}
+
+// MonthlyDataPoint contains aggregated data for one calendar month.
+type MonthlyDataPoint struct {
+	Month        string                  `json:"month"`  // "2024-01"
+	TotalIncome  float64                 `json:"total_income"`
+	TotalExpense float64                 `json:"total_expense"`
+	Net          float64                 `json:"net"`
+	TopExpense   []CategoryBreakdownItem `json:"top_expense"`
+	TopIncome    []CategoryBreakdownItem `json:"top_income"`
+}
+
+// MonthlyReportResponse wraps the monthly data array.
+type MonthlyReportResponse struct {
+	Months []MonthlyDataPoint `json:"months"`
+}

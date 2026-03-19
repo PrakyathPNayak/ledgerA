@@ -409,3 +409,99 @@ func (s *statsService) buildSubcategoryNames(ctx context.Context, userID uuid.UU
 	}
 	return names
 }
+
+// Monthly returns income/expense/net per calendar month for the last N months.
+func (s *statsService) Monthly(ctx context.Context, userID uuid.UUID, query dto.MonthlyQuery) (*dto.MonthlyReportResponse, error) {
+	months := query.Months
+	if months <= 0 || months > 60 {
+		months = 12
+	}
+
+	now := time.Now().UTC()
+	startMonth := time.Date(now.Year(), now.Month()-time.Month(months-1), 1, 0, 0, 0, 0, time.UTC)
+	endMonth := time.Date(now.Year(), now.Month()+1, 1, 0, 0, 0, 0, time.UTC)
+
+	filter := repository.TransactionListFilter{
+		Type: "all", SortBy: "transaction_date", SortDir: "asc",
+		Page: 1, PerPage: 50000,
+		DateFrom: &startMonth, DateTo: &endMonth,
+	}
+	if query.AccountID != nil && *query.AccountID != "" && *query.AccountID != "all" {
+		parsedID, err := uuid.Parse(*query.AccountID)
+		if err != nil {
+			return nil, fmt.Errorf("statsService.Monthly.ParseAccountID: %w", err)
+		}
+		filter.AccountID = &parsedID
+	}
+
+	items, _, err := s.txRepo.ListByUserID(ctx, userID, filter)
+	if err != nil {
+		return nil, fmt.Errorf("statsService.Monthly.List: %w", err)
+	}
+
+	categoryNames := s.buildCategoryNames(ctx, userID)
+	subcategoryNames := s.buildSubcategoryNames(ctx, userID)
+
+	type monthKey struct{ year int; month time.Month }
+	type breakdownAccum map[statsBreakdownKey]float64
+
+	monthIncome := map[monthKey]float64{}
+	monthExpense := map[monthKey]float64{}
+	monthExpenseBreakdown := map[monthKey]breakdownAccum{}
+	monthIncomeBreakdown := map[monthKey]breakdownAccum{}
+
+	for _, item := range items {
+		mk := monthKey{year: item.TransactionDate.Year(), month: item.TransactionDate.Month()}
+
+		catName := categoryNames[item.CategoryID]
+		if catName == "" {
+			catName = "Uncategorized"
+		}
+		subName := subcategoryNames[item.SubcategoryID]
+		if subName == "" {
+			subName = catName
+		}
+		bk := statsBreakdownKey{category: catName, subcategory: subName}
+
+		if item.Amount >= 0 {
+			monthIncome[mk] += item.Amount
+			if monthIncomeBreakdown[mk] == nil {
+				monthIncomeBreakdown[mk] = breakdownAccum{}
+			}
+			monthIncomeBreakdown[mk][bk] += item.Amount
+		} else {
+			monthExpense[mk] += -item.Amount
+			if monthExpenseBreakdown[mk] == nil {
+				monthExpenseBreakdown[mk] = breakdownAccum{}
+			}
+			monthExpenseBreakdown[mk][bk] += -item.Amount
+		}
+	}
+
+	result := &dto.MonthlyReportResponse{Months: make([]dto.MonthlyDataPoint, 0, months)}
+	for i := 0; i < months; i++ {
+		t := time.Date(now.Year(), now.Month()-time.Month(months-1-i), 1, 0, 0, 0, 0, time.UTC)
+		mk := monthKey{year: t.Year(), month: t.Month()}
+		inc := monthIncome[mk]
+		exp := monthExpense[mk]
+		topN := 5
+		expBreak := buildBreakdownItems(monthExpenseBreakdown[mk], exp)
+		incBreak := buildBreakdownItems(monthIncomeBreakdown[mk], inc)
+		if len(expBreak) > topN {
+			expBreak = expBreak[:topN]
+		}
+		if len(incBreak) > topN {
+			incBreak = incBreak[:topN]
+		}
+		result.Months = append(result.Months, dto.MonthlyDataPoint{
+			Month:        fmt.Sprintf("%04d-%02d", t.Year(), int(t.Month())),
+			TotalIncome:  inc,
+			TotalExpense: exp,
+			Net:          inc - exp,
+			TopExpense:   expBreak,
+			TopIncome:    incBreak,
+		})
+	}
+
+	return result, nil
+}
