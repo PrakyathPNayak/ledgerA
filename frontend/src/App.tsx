@@ -1,12 +1,14 @@
 import { Navigate, Outlet, createBrowserRouter } from 'react-router-dom'
 
 import { AccountsPage } from '@/pages/AccountsPage'
+import { BudgetsPage } from '@/pages/BudgetsPage'
 import { ChatPage } from '@/pages/ChatPage'
 import { ComparePage } from '@/pages/ComparePage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { HelpPage } from '@/pages/HelpPage'
 import { PassbookPage } from '@/pages/PassbookPage'
 import { QuickTransactionsPage } from '@/pages/QuickTransactionsPage'
+import { RecurringPage } from '@/pages/RecurringPage'
 import { SearchPage } from '@/pages/SearchPage'
 import { StatsPage } from '@/pages/Stats'
 import { LoginPage } from '@/pages/auth/Login'
@@ -34,6 +36,8 @@ export const appRouter = createBrowserRouter([
             { path: '/accounts/:id', element: <PassbookPage /> },
             { path: '/search', element: <SearchPage /> },
             { path: '/quick-transactions', element: <QuickTransactionsPage /> },
+            { path: '/recurring', element: <RecurringPage /> },
+            { path: '/budgets', element: <BudgetsPage /> },
             { path: '/compare', element: <ComparePage /> },
             { path: '/chat', element: <ChatPage /> },
             { path: '/help', element: <HelpPage /> },

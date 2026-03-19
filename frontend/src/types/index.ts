@@ -169,3 +169,39 @@ export interface CompareFilters {
     value2: string
     account_id?: string
 }
+
+export interface RecurringTransaction {
+    id: string
+    user_id: string
+    account_id: string
+    category_id: string
+    subcategory_id: string
+    name: string
+    amount: number
+    notes?: string
+    frequency: 'daily' | 'weekly' | 'monthly' | 'yearly'
+    start_date: string
+    next_due_date: string
+    end_date?: string
+    is_active: boolean
+    last_executed_at?: string
+    created_at: string
+    updated_at: string
+}
+
+export interface Budget {
+    id: string
+    user_id: string
+    category_id: string
+    amount: number
+    period: 'monthly' | 'yearly'
+    is_active: boolean
+    created_at: string
+    updated_at: string
+}
+
+export interface BudgetProgress extends Budget {
+    spent: number
+    remaining: number
+    percent: number
+}

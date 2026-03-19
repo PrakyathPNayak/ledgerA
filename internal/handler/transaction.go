@@ -1,9 +1,12 @@
 package handler
 
 import (
+	"encoding/csv"
+	"fmt"
 	"ledgerA/internal/dto"
 	"ledgerA/internal/middleware"
 	"ledgerA/internal/service"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -165,4 +168,54 @@ func (h *TransactionHandler) Transfer(c *gin.Context) {
 		Debit:  dto.NewTransactionResponse(*debit),
 		Credit: dto.NewTransactionResponse(*credit),
 	})
+}
+
+// ExportCSV handles GET /api/v1/transactions/export/csv.
+func (h *TransactionHandler) ExportCSV(c *gin.Context) {
+	userID, ok := h.resolveUserID(c)
+	if !ok {
+		return
+	}
+	var filters dto.TransactionFilters
+	if err := c.ShouldBindQuery(&filters); err != nil {
+		dto.Error(c, 400, "ERR_BAD_REQUEST", err.Error())
+		return
+	}
+	filters.Page = 1
+	filters.PerPage = 10000
+
+	items, _, err := h.transactionService.List(c.Request.Context(), userID, filters)
+	if err != nil {
+		dto.Error(c, 500, "ERR_INTERNAL", "failed to list transactions")
+		return
+	}
+
+	c.Header("Content-Disposition", "attachment; filename=\"transactions.csv\"")
+	c.Header("Content-Type", "text/csv; charset=utf-8")
+	c.Status(http.StatusOK)
+
+	writer := csv.NewWriter(c.Writer)
+	defer writer.Flush()
+
+	_ = writer.Write([]string{"Date", "Name", "Amount", "Type", "Account ID", "Category ID", "Notes"})
+
+	for _, tx := range items {
+		txType := "income"
+		if tx.Amount < 0 {
+			txType = "expense"
+		}
+		notes := ""
+		if tx.Notes != nil {
+			notes = *tx.Notes
+		}
+		_ = writer.Write([]string{
+			tx.TransactionDate.Format("2006-01-02"),
+			tx.Name,
+			fmt.Sprintf("%.2f", tx.Amount),
+			txType,
+			tx.AccountID.String(),
+			tx.CategoryID.String(),
+			notes,
+		})
+	}
 }

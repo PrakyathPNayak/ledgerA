@@ -73,3 +73,21 @@ type StatsService interface {
 type AuditService interface {
 	List(ctx context.Context, userID uuid.UUID, filter repository.AuditListFilter) ([]model.AuditLog, int64, error)
 }
+
+// RecurringService defines recurring transaction business logic.
+type RecurringService interface {
+	List(ctx context.Context, userID uuid.UUID) ([]model.RecurringTransaction, int64, error)
+	Create(ctx context.Context, userID uuid.UUID, req dto.CreateRecurringRequest) (*model.RecurringTransaction, error)
+	Update(ctx context.Context, userID uuid.UUID, id uuid.UUID, req dto.UpdateRecurringRequest) (*model.RecurringTransaction, error)
+	Delete(ctx context.Context, userID uuid.UUID, id uuid.UUID) error
+	ProcessDue(ctx context.Context) (int, error)
+}
+
+// BudgetService defines budget business logic.
+type BudgetService interface {
+	List(ctx context.Context, userID uuid.UUID) ([]model.Budget, int64, error)
+	Create(ctx context.Context, userID uuid.UUID, req dto.CreateBudgetRequest) (*model.Budget, error)
+	Update(ctx context.Context, userID uuid.UUID, id uuid.UUID, req dto.UpdateBudgetRequest) (*model.Budget, error)
+	Delete(ctx context.Context, userID uuid.UUID, id uuid.UUID) error
+	Progress(ctx context.Context, userID uuid.UUID) ([]dto.BudgetProgressResponse, error)
+}

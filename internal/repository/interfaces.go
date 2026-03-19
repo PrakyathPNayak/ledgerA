@@ -8,6 +8,26 @@ import (
 	"github.com/google/uuid"
 )
 
+// RecurringRepository defines recurring transaction persistence methods.
+type RecurringRepository interface {
+	ListByUserID(ctx context.Context, userID uuid.UUID) ([]model.RecurringTransaction, int64, error)
+	FindByID(ctx context.Context, userID uuid.UUID, id uuid.UUID) (*model.RecurringTransaction, error)
+	Create(ctx context.Context, item *model.RecurringTransaction) error
+	Update(ctx context.Context, item *model.RecurringTransaction) error
+	Delete(ctx context.Context, userID uuid.UUID, id uuid.UUID) error
+	FindDue(ctx context.Context, before time.Time) ([]model.RecurringTransaction, error)
+}
+
+// BudgetRepository defines budget persistence methods.
+type BudgetRepository interface {
+	ListByUserID(ctx context.Context, userID uuid.UUID) ([]model.Budget, int64, error)
+	FindByID(ctx context.Context, userID uuid.UUID, id uuid.UUID) (*model.Budget, error)
+	Create(ctx context.Context, item *model.Budget) error
+	Update(ctx context.Context, item *model.Budget) error
+	Delete(ctx context.Context, userID uuid.UUID, id uuid.UUID) error
+	FindByCategory(ctx context.Context, userID uuid.UUID, categoryID uuid.UUID, period string) (*model.Budget, error)
+}
+
 // TransactionListFilter defines filters for transaction lists.
 type TransactionListFilter struct {
 	AccountID     *uuid.UUID

@@ -1,11 +1,13 @@
 import { Link, useLocation } from 'react-router-dom'
 import {
   BarChart3,
+  CalendarClock,
   CreditCard,
   GitCompare,
   HelpCircle,
   LayoutDashboard,
   MessageCircle,
+  PiggyBank,
   Search,
   Zap,
 } from 'lucide-react'
@@ -19,6 +21,8 @@ const navItems = [
   { to: '/accounts', label: 'Accounts', icon: CreditCard },
   { to: '/search', label: 'Search', icon: Search },
   { to: '/quick-transactions', label: 'Quick Actions', icon: Zap },
+  { to: '/recurring', label: 'Recurring', icon: CalendarClock },
+  { to: '/budgets', label: 'Budgets', icon: PiggyBank },
   { to: '/compare', label: 'Compare', icon: GitCompare },
   { to: '/chat', label: 'Chat', icon: MessageCircle },
   { to: '/help', label: 'Help', icon: HelpCircle },

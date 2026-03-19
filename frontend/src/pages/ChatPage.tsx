@@ -110,8 +110,8 @@ export function ChatPage() {
                         <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                             <div
                                 className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm ${msg.role === 'user'
-                                        ? 'bg-accent text-white'
-                                        : 'bg-elevated text-foreground'
+                                    ? 'bg-accent text-white'
+                                    : 'bg-elevated text-foreground'
                                     }`}
                             >
                                 <div dangerouslySetInnerHTML={{ __html: renderMarkdown(msg.content) }} />

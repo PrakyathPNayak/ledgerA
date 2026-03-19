@@ -10,6 +10,7 @@ import { useAccounts } from '@/hooks/useAccounts'
 import { useCategories } from '@/hooks/useCategories'
 import { useDeleteTransaction } from '@/hooks/useTransactions'
 import api from '@/lib/api'
+import { getValidToken } from '@/lib/firebase'
 import type { Transaction } from '@/types'
 
 const columns = [
@@ -110,6 +111,33 @@ export function SearchPage() {
                             <option value="income">Income</option>
                             <option value="expense">Expense</option>
                         </select>
+                    </div>
+
+                    <div className="flex justify-end">
+                        <button
+                            type="button"
+                            onClick={async () => {
+                                const params = new URLSearchParams()
+                                if (searchText) params.set('search', searchText)
+                                if (accountId) params.set('account_id', accountId)
+                                if (categoryId) params.set('category_id', categoryId)
+                                if (type !== 'all') params.set('type', type)
+                                const token = await getValidToken()
+                                const resp = await fetch(`/api/v1/export/transactions.csv?${params}`, {
+                                    headers: { Authorization: `Bearer ${token}` },
+                                })
+                                const blob = await resp.blob()
+                                const url = URL.createObjectURL(blob)
+                                const a = document.createElement('a')
+                                a.href = url
+                                a.download = 'transactions.csv'
+                                a.click()
+                                URL.revokeObjectURL(url)
+                            }}
+                            className="rounded-lg border border-border px-3 py-1.5 text-sm text-secondary hover:bg-surface-hover"
+                        >
+                            Export CSV
+                        </button>
                     </div>
                 </section>
 

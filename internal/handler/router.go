@@ -18,6 +18,8 @@ type RouterDependencies struct {
 	StatsHandler            *StatsHandler
 	AuditHandler            *AuditHandler
 	ChatHandler             *ChatHandler
+	RecurringHandler        *RecurringHandler
+	BudgetHandler           *BudgetHandler
 	AllowedOrigins          []string
 }
 
@@ -71,6 +73,19 @@ func SetupRouter(deps RouterDependencies) *gin.Engine {
 			protected.DELETE("/transactions/:id", deps.TransactionHandler.Delete)
 
 			protected.POST("/transfers", deps.TransactionHandler.Transfer)
+			protected.GET("/export/transactions.csv", deps.TransactionHandler.ExportCSV)
+
+			protected.GET("/recurring", deps.RecurringHandler.List)
+			protected.POST("/recurring", deps.RecurringHandler.Create)
+			protected.PATCH("/recurring/:id", deps.RecurringHandler.Update)
+			protected.DELETE("/recurring/:id", deps.RecurringHandler.Delete)
+			protected.POST("/recurring/process", deps.RecurringHandler.ProcessDue)
+
+			protected.GET("/budgets", deps.BudgetHandler.List)
+			protected.POST("/budgets", deps.BudgetHandler.Create)
+			protected.GET("/budgets/progress", deps.BudgetHandler.Progress)
+			protected.PATCH("/budgets/:id", deps.BudgetHandler.Update)
+			protected.DELETE("/budgets/:id", deps.BudgetHandler.Delete)
 
 			protected.GET("/quick-transactions", deps.QuickTransactionHandler.List)
 			protected.POST("/quick-transactions", deps.QuickTransactionHandler.Create)
