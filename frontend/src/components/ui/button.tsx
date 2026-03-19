@@ -9,8 +9,8 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 export function Button({ className = '', variant = 'default', ...props }: ButtonProps) {
     const variantClass =
         variant === 'outline'
-            ? 'border border-slate-300 bg-white text-slate-900 hover:bg-slate-100'
-            : 'bg-slate-900 text-white hover:bg-slate-700'
+            ? 'border border-border bg-surface text-foreground hover:bg-surface-hover'
+            : 'bg-accent text-white hover:bg-accent/80'
 
     return (
         <button

@@ -9,8 +9,8 @@ type AlertProps = HTMLAttributes<HTMLDivElement> & {
 export function Alert({ className = '', variant = 'default', title, children, ...props }: AlertProps) {
     const variantClass =
         variant === 'destructive'
-            ? 'border-rose-300 bg-rose-50 text-rose-800'
-            : 'border-slate-300 bg-slate-50 text-slate-800'
+            ? 'border-negative/30 bg-negative-muted text-negative'
+            : 'border-border bg-elevated text-foreground'
 
     return (
         <div className={`rounded-lg border p-3 ${variantClass} ${className}`} role="alert" {...props}>

@@ -2,20 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Zed-inspired colour system ─────────────────────────────── */
 :root {
     color-scheme: light;
+
+    --color-bg-app: #f4f4f5;          /* page backdrop */
+    --color-bg-surface: #ffffff;       /* cards / panels */
+    --color-bg-elevated: #f4f4f5;     /* nested surfaces, inputs */
+    --color-bg-hover: #e4e4e7;        /* hover states */
+    --color-border: #d4d4d8;          /* default border */
+    --color-border-subtle: #e4e4e7;   /* softer borders */
+    --color-text: #18181b;            /* primary text */
+    --color-text-secondary: #52525b;  /* supporting text */
+    --color-text-muted: #a1a1aa;      /* subtle / placeholder */
+    --color-accent: #3b82f6;          /* primary accent */
+    --color-positive: #059669;        /* income / success */
+    --color-positive-muted: #d1fae5;
+    --color-negative: #dc2626;        /* expense / danger */
+    --color-negative-muted: #fee2e2;
 }
 
 :root.dark {
     color-scheme: dark;
+
+    --color-bg-app: #0f1115;
+    --color-bg-surface: #18181b;
+    --color-bg-elevated: #222226;
+    --color-bg-hover: #2c2c31;
+    --color-border: #2e2e33;
+    --color-border-subtle: #252528;
+    --color-text: #d4d4d8;
+    --color-text-secondary: #a1a1aa;
+    --color-text-muted: #63636b;
+    --color-accent: #6cb6ff;
+    --color-positive: #4ae0a0;
+    --color-positive-muted: rgba(74, 224, 160, 0.12);
+    --color-negative: #f47067;
+    --color-negative-muted: rgba(244, 112, 103, 0.12);
 }
 
 body {
     margin: 0;
-    font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
-    background: radial-gradient(circle at 15% 15%, #e2e8f0 0%, #f8fafc 40%, #ffffff 100%);
-}
-
-:root.dark body {
-    background: radial-gradient(circle at 15% 15%, #1e293b 0%, #0f172a 45%, #020617 100%);
+    font-family: 'IBM Plex Sans', 'Inter', 'Segoe UI', system-ui, sans-serif;
+    background-color: var(--color-bg-app);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }

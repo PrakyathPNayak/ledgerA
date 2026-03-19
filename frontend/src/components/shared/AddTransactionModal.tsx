@@ -215,14 +215,14 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4">
-            <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
-                <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-slate-700">
-                    <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Add Transaction</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div className="w-full max-w-2xl rounded-2xl border border-border bg-surface shadow-xl border-border bg-surface">
+                <div className="flex items-center justify-between border-b border-border px-6 py-4 border-border">
+                    <h2 className="text-xl font-semibold text-foreground">Add Transaction</h2>
                     <button
                         type="button"
                         onClick={handleClose}
-                        className="rounded-md px-3 py-1.5 text-sm text-slate-500 hover:bg-slate-100"
+                        className="rounded-md px-3 py-1.5 text-sm text-muted hover:bg-surface-hover"
                     >
                         Close
                     </button>
@@ -233,7 +233,7 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
                         <button
                             type="button"
                             onClick={() => setKind('expense')}
-                            className={`rounded-full px-4 py-2 text-sm font-medium ${kind === 'expense' ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-600'
+                            className={`rounded-full px-4 py-2 text-sm font-medium ${kind === 'expense' ? 'bg-rose-100 text-negative' : 'bg-elevated text-secondary'
                                 }`}
                         >
                             Expense
@@ -241,7 +241,7 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
                         <button
                             type="button"
                             onClick={() => setKind('income')}
-                            className={`rounded-full px-4 py-2 text-sm font-medium ${kind === 'income' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'
+                            className={`rounded-full px-4 py-2 text-sm font-medium ${kind === 'income' ? 'bg-positive-muted text-positive' : 'bg-elevated text-secondary'
                                 }`}
                         >
                             Income
@@ -250,11 +250,11 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
 
                     <div className="grid gap-4 md:grid-cols-2">
                         <label className="space-y-1">
-                            <span className="text-sm font-medium text-slate-700">Account</span>
+                            <span className="text-sm font-medium text-secondary">Account</span>
                             <select
                                 value={accountId}
                                 onChange={(e) => setAccountId(e.target.value)}
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                                 required
                             >
                                 <option value="">Select account</option>
@@ -269,20 +269,20 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
                                     value={newAccountName}
                                     onChange={(e) => setNewAccountName(e.target.value)}
                                     placeholder="New account"
-                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                    className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                                 />
                                 <input
                                     value={newAccountOpeningBalance}
                                     onChange={(e) => setNewAccountOpeningBalance(e.target.value)}
                                     placeholder="Opening"
                                     inputMode="decimal"
-                                    className="w-32 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                    className="w-32 rounded-lg border border-border px-3 py-2 text-sm"
                                 />
                                 <button
                                     type="button"
                                     onClick={handleCreateAccount}
                                     disabled={createAccount.isPending}
-                                    className="rounded-lg border border-slate-300 px-3 text-sm"
+                                    className="rounded-lg border border-border px-3 text-sm"
                                 >
                                     Add
                                 </button>
@@ -290,14 +290,14 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
                         </label>
 
                         <label className="space-y-1">
-                            <span className="text-sm font-medium text-slate-700">Category</span>
+                            <span className="text-sm font-medium text-secondary">Category</span>
                             <select
                                 value={categoryId}
                                 onChange={(e) => {
                                     setCategoryId(e.target.value)
                                     setSubcategoryId('')
                                 }}
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                                 required
                             >
                                 <option value="">Select category</option>
@@ -312,13 +312,13 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
                                     value={newCategoryName}
                                     onChange={(e) => setNewCategoryName(e.target.value)}
                                     placeholder="New category"
-                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                    className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                                 />
                                 <button
                                     type="button"
                                     onClick={handleCreateCategory}
                                     disabled={createCategory.isPending}
-                                    className="rounded-lg border border-slate-300 px-3 text-sm"
+                                    className="rounded-lg border border-border px-3 text-sm"
                                 >
                                     Add
                                 </button>
@@ -328,11 +328,11 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
 
                     <div className="grid gap-4 md:grid-cols-2">
                         <label className="space-y-1">
-                            <span className="text-sm font-medium text-slate-700">Subcategory</span>
+                            <span className="text-sm font-medium text-secondary">Subcategory</span>
                             <select
                                 value={subcategoryId}
                                 onChange={(e) => setSubcategoryId(e.target.value)}
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                             >
                                 <option value="">Auto / none</option>
                                 {(selectedCategory?.subcategories ?? []).map((item) => (
@@ -347,13 +347,13 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
                                     onChange={(e) => setNewSubcategoryName(e.target.value)}
                                     placeholder="New subcategory"
                                     disabled={!categoryId}
-                                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100"
+                                    className="w-full rounded-lg border border-border px-3 py-2 text-sm disabled:bg-elevated"
                                 />
                                 <button
                                     type="button"
                                     onClick={handleCreateSubcategory}
                                     disabled={!categoryId || createSubcategory.isPending}
-                                    className="rounded-lg border border-slate-300 px-3 text-sm disabled:opacity-60"
+                                    className="rounded-lg border border-border px-3 text-sm disabled:opacity-60"
                                 >
                                     Add
                                 </button>
@@ -361,11 +361,11 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
                         </label>
 
                         <label className="space-y-1">
-                            <span className="text-sm font-medium text-slate-700">Name</span>
+                            <span className="text-sm font-medium text-secondary">Name</span>
                             <input
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                                 placeholder="e.g. Groceries"
                                 required
                             />
@@ -374,24 +374,24 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
 
                     <div className="grid gap-4 md:grid-cols-3">
                         <label className="space-y-1">
-                            <span className="text-sm font-medium text-slate-700">Amount</span>
+                            <span className="text-sm font-medium text-secondary">Amount</span>
                             <input
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
                                 inputMode="decimal"
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                                 placeholder="0.00"
                                 required
                             />
                         </label>
 
                         <label className="space-y-1">
-                            <span className="text-sm font-medium text-slate-700">Date</span>
+                            <span className="text-sm font-medium text-secondary">Date</span>
                             <input
                                 type="date"
                                 value={transactionDate}
                                 onChange={(e) => setTransactionDate(e.target.value)}
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                                 required
                             />
                         </label>
@@ -402,19 +402,19 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
                                 checked={isScheduled}
                                 onChange={(e) => setIsScheduled(e.target.checked)}
                             />
-                            <span className="text-sm text-slate-700">Scheduled</span>
+                            <span className="text-sm text-secondary">Scheduled</span>
                         </label>
                     </div>
 
                     <div className="space-y-2">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Quick Fill Amount</p>
+                        <p className="text-xs font-semibold uppercase tracking-wide text-muted">Quick Fill Amount</p>
                         <div className="flex flex-wrap gap-2">
                             {QUICK_AMOUNTS.map((value) => (
                                 <button
                                     key={value}
                                     type="button"
                                     onClick={() => setAmount(String(value))}
-                                    className="rounded-full border border-slate-300 px-3 py-1 text-sm text-slate-700"
+                                    className="rounded-full border border-border px-3 py-1 text-sm text-secondary"
                                 >
                                     {value}
                                 </button>
@@ -423,35 +423,35 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
                     </div>
 
                     <label className="space-y-1">
-                        <span className="text-sm font-medium text-slate-700">Notes</span>
+                        <span className="text-sm font-medium text-secondary">Notes</span>
                         <textarea
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
                             rows={3}
-                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                            className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                         />
                     </label>
 
                     {transactionError ? (
-                        <p className="rounded-md bg-rose-50 px-3 py-2 text-sm text-rose-700">{transactionError}</p>
+                        <p className="rounded-md bg-negative-muted px-3 py-2 text-sm text-negative">{transactionError}</p>
                     ) : null}
 
                     {inlineCreateError ? (
-                        <p className="rounded-md bg-rose-50 px-3 py-2 text-sm text-rose-700">{inlineCreateError}</p>
+                        <p className="rounded-md bg-negative-muted px-3 py-2 text-sm text-negative">{inlineCreateError}</p>
                     ) : null}
 
-                    <div className="flex justify-end gap-2 border-t border-slate-200 pt-4">
+                    <div className="flex justify-end gap-2 border-t border-border pt-4">
                         <button
                             type="button"
                             onClick={handleClose}
-                            className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-700"
+                            className="rounded-lg border border-border px-4 py-2 text-sm text-secondary"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={createTransaction.isPending}
-                            className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+                            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
                         >
                             {createTransaction.isPending ? 'Saving...' : 'Save Transaction'}
                         </button>

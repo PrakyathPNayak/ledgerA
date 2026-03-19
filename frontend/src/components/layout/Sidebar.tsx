@@ -31,12 +31,12 @@ export function Sidebar() {
 
   return (
     <aside
-      className={`border-r border-slate-200 bg-white transition-all dark:border-slate-800 dark:bg-slate-900 ${sidebarCollapsed ? 'w-20' : 'w-64'
+      className={`border-r border-border bg-surface transition-all border-border bg-surface ${sidebarCollapsed ? 'w-20' : 'w-64'
         }`}
     >
-      <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-        <span className="text-sm font-semibold text-slate-700 dark:text-slate-100">ledgerA</span>
-        <button className="text-xs text-slate-500 dark:text-slate-400" onClick={toggleSidebar}>
+      <div className="flex items-center justify-between border-b border-border px-4 py-3 border-border">
+        <span className="text-sm font-semibold text-foreground">ledgerA</span>
+        <button className="text-xs text-muted" onClick={toggleSidebar}>
           {sidebarCollapsed ? '>>' : '<<'}
         </button>
       </div>
@@ -49,8 +49,8 @@ export function Sidebar() {
               key={item.to}
               to={item.to}
               className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm ${active
-                ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100'
+                ? 'bg-accent text-white'
+                : 'text-secondary hover:bg-surface-hover hover:text-foreground text-secondary hover:bg-surface-hover '
                 }`}
             >
               <Icon size={16} />
@@ -68,7 +68,7 @@ export function Sidebar() {
           )
         })}
       </nav>
-      <div className="mt-auto border-t border-slate-200 p-3 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
+      <div className="mt-auto border-t border-border p-3 text-xs text-muted border-border text-muted">
         {user ? `${user.displayName ?? user.email}` : 'Guest'}
       </div>
     </aside>

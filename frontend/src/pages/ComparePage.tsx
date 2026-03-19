@@ -60,22 +60,22 @@ function formatPct(value: number): string {
 
 function PeriodCard({ data, label }: { data: ComparePeriodData; label: string }) {
     return (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</h3>
-            <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">{data.label}</p>
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm border-border bg-surface">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-muted">{label}</h3>
+            <p className="mt-1 text-xs text-muted">{data.label}</p>
 
             <div className="mt-4 grid grid-cols-3 gap-3">
                 <div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Income</p>
-                    <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">{formatMoney(data.total_income)}</p>
+                    <p className="text-xs text-muted">Income</p>
+                    <p className="text-lg font-bold text-positive">{formatMoney(data.total_income)}</p>
                 </div>
                 <div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Expense</p>
-                    <p className="text-lg font-bold text-rose-700 dark:text-rose-400">{formatMoney(data.total_expense)}</p>
+                    <p className="text-xs text-muted">Expense</p>
+                    <p className="text-lg font-bold text-negative">{formatMoney(data.total_expense)}</p>
                 </div>
                 <div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Net</p>
-                    <p className={`text-lg font-bold ${data.net >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`}>
+                    <p className="text-xs text-muted">Net</p>
+                    <p className={`text-lg font-bold ${data.net >= 0 ? 'text-positive' : 'text-negative'}`}>
                         {formatMoney(data.net)}
                     </p>
                 </div>
@@ -83,12 +83,12 @@ function PeriodCard({ data, label }: { data: ComparePeriodData; label: string })
 
             {data.top_expense.length > 0 && (
                 <div className="mt-4">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Top Expenses</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted">Top Expenses</p>
                     <ul className="mt-2 space-y-1">
                         {data.top_expense.map((item, i) => (
                             <li key={i} className="flex items-center justify-between text-sm">
-                                <span className="text-slate-700 dark:text-slate-300">{item.subcategory || item.category}</span>
-                                <span className="font-medium text-slate-900 dark:text-slate-100">{formatMoney(Math.abs(item.amount))}</span>
+                                <span className="text-secondary">{item.subcategory || item.category}</span>
+                                <span className="font-medium text-foreground">{formatMoney(Math.abs(item.amount))}</span>
                             </li>
                         ))}
                     </ul>
@@ -122,14 +122,14 @@ export function ComparePage() {
     return (
         <PageShell title="Compare">
             <div className="space-y-6">
-                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
                     <div className="grid gap-3 md:grid-cols-4">
                         <label className="space-y-1">
-                            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Period</span>
+                            <span className="text-xs font-semibold uppercase tracking-wide text-muted">Period</span>
                             <select
                                 value={period}
                                 onChange={(e) => setPeriod(e.target.value as Period)}
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                                className="w-full rounded-lg border border-border px-3 py-2 text-sm border-border bg-elevated text-foreground"
                             >
                                 <option value="day">Day</option>
                                 <option value="week">Week</option>
@@ -139,11 +139,11 @@ export function ComparePage() {
                         </label>
 
                         <label className="space-y-1">
-                            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Period 1</span>
+                            <span className="text-xs font-semibold uppercase tracking-wide text-muted">Period 1</span>
                             <select
                                 value={value1}
                                 onChange={(e) => setValue1(e.target.value)}
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                                className="w-full rounded-lg border border-border px-3 py-2 text-sm border-border bg-elevated text-foreground"
                             >
                                 {valueOptions.map((opt) => (
                                     <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -152,11 +152,11 @@ export function ComparePage() {
                         </label>
 
                         <label className="space-y-1">
-                            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Period 2</span>
+                            <span className="text-xs font-semibold uppercase tracking-wide text-muted">Period 2</span>
                             <select
                                 value={value2}
                                 onChange={(e) => setValue2(e.target.value)}
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                                className="w-full rounded-lg border border-border px-3 py-2 text-sm border-border bg-elevated text-foreground"
                             >
                                 {valueOptions.map((opt) => (
                                     <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -165,11 +165,11 @@ export function ComparePage() {
                         </label>
 
                         <label className="space-y-1">
-                            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Account</span>
+                            <span className="text-xs font-semibold uppercase tracking-wide text-muted">Account</span>
                             <select
                                 value={accountId}
                                 onChange={(e) => setAccountId(e.target.value)}
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                                className="w-full rounded-lg border border-border px-3 py-2 text-sm border-border bg-elevated text-foreground"
                             >
                                 <option value="">All accounts</option>
                                 {accounts.map((account) => (
@@ -180,22 +180,22 @@ export function ComparePage() {
                     </div>
                 </section>
 
-                {isLoading && <p className="text-sm text-slate-500 dark:text-slate-400">Loading comparison...</p>}
+                {isLoading && <p className="text-sm text-muted">Loading comparison...</p>}
 
                 {compare && (
                     <>
                         <section className="grid gap-4 md:grid-cols-3">
-                            <article className={`rounded-2xl border p-4 ${compare.income_change_pct >= 0 ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950' : 'border-rose-200 bg-rose-50 dark:border-rose-800 dark:bg-rose-950'}`}>
-                                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Income Change</p>
-                                <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-slate-100">{formatPct(compare.income_change_pct)}</p>
+                            <article className={`rounded-2xl border p-4 ${compare.income_change_pct >= 0 ? 'border-positive/20 bg-positive-muted border-positive/20 bg-positive-muted' : 'border-negative/20 bg-negative-muted border-negative/20 bg-negative-muted'}`}>
+                                <p className="text-xs font-semibold uppercase tracking-wide text-muted">Income Change</p>
+                                <p className="mt-2 text-2xl font-bold text-foreground">{formatPct(compare.income_change_pct)}</p>
                             </article>
-                            <article className={`rounded-2xl border p-4 ${compare.expense_change_pct <= 0 ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950' : 'border-rose-200 bg-rose-50 dark:border-rose-800 dark:bg-rose-950'}`}>
-                                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Expense Change</p>
-                                <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-slate-100">{formatPct(compare.expense_change_pct)}</p>
+                            <article className={`rounded-2xl border p-4 ${compare.expense_change_pct <= 0 ? 'border-positive/20 bg-positive-muted border-positive/20 bg-positive-muted' : 'border-negative/20 bg-negative-muted border-negative/20 bg-negative-muted'}`}>
+                                <p className="text-xs font-semibold uppercase tracking-wide text-muted">Expense Change</p>
+                                <p className="mt-2 text-2xl font-bold text-foreground">{formatPct(compare.expense_change_pct)}</p>
                             </article>
-                            <article className={`rounded-2xl border p-4 ${compare.net_change >= 0 ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950' : 'border-rose-200 bg-rose-50 dark:border-rose-800 dark:bg-rose-950'}`}>
-                                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Net Change</p>
-                                <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-slate-100">{formatMoney(compare.net_change)}</p>
+                            <article className={`rounded-2xl border p-4 ${compare.net_change >= 0 ? 'border-positive/20 bg-positive-muted border-positive/20 bg-positive-muted' : 'border-negative/20 bg-negative-muted border-negative/20 bg-negative-muted'}`}>
+                                <p className="text-xs font-semibold uppercase tracking-wide text-muted">Net Change</p>
+                                <p className="mt-2 text-2xl font-bold text-foreground">{formatMoney(compare.net_change)}</p>
                             </article>
                         </section>
 

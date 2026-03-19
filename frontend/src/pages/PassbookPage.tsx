@@ -36,15 +36,15 @@ export function PassbookPage() {
 
     return (
         <PageShell title="Passbook">
-            <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <section className="space-y-4 rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
                 <div className="flex items-center justify-between">
                     <div>
-                        <p className="text-sm text-slate-500">Account</p>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{account?.name ?? 'Unknown account'}</h2>
+                        <p className="text-sm text-muted">Account</p>
+                        <h2 className="text-2xl font-bold text-foreground">{account?.name ?? 'Unknown account'}</h2>
                     </div>
                     <div className="text-right">
-                        <p className="text-xs uppercase tracking-wide text-slate-500">Current Balance</p>
-                        <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{money(account?.current_balance ?? 0)}</p>
+                        <p className="text-xs uppercase tracking-wide text-muted">Current Balance</p>
+                        <p className="text-2xl font-bold text-foreground">{money(account?.current_balance ?? 0)}</p>
                     </div>
                 </div>
 
@@ -64,7 +64,7 @@ export function PassbookPage() {
                     ))}
                 </SortableTable>
 
-                <Link to="/accounts" className="inline-flex text-sm font-medium text-slate-700 underline-offset-2 hover:underline">
+                <Link to="/accounts" className="inline-flex text-sm font-medium text-secondary underline-offset-2 hover:underline">
                     Back to accounts
                 </Link>
             </section>

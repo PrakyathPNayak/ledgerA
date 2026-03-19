@@ -79,18 +79,18 @@ export function ChatPage() {
     return (
         <PageShell title="Chat">
             <div className="mx-auto flex h-[calc(100vh-10rem)] max-w-3xl flex-col">
-                <div className="flex-1 space-y-4 overflow-y-auto rounded-t-2xl border border-b-0 border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+                <div className="flex-1 space-y-4 overflow-y-auto rounded-t-2xl border border-b-0 border-border bg-surface p-4 border-border bg-surface">
                     {messages.map((msg, i) => (
                         <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                             <div
                                 className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap ${msg.role === 'user'
-                                        ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-                                        : 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100'
+                                        ? 'bg-accent text-white'
+                                        : 'bg-elevated text-foreground bg-elevated text-foreground'
                                     }`}
                             >
                                 {msg.content}
                                 {msg.action && (
-                                    <div className="mt-2 rounded-lg bg-emerald-100 px-3 py-1.5 text-xs text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200">
+                                    <div className="mt-2 rounded-lg bg-positive-muted px-3 py-1.5 text-xs text-positive bg-positive-muted text-positive">
                                         {msg.action.type === 'expense' ? '🔴 Expense' : '🟢 Income'} recorded
                                     </div>
                                 )}
@@ -99,7 +99,7 @@ export function ChatPage() {
                     ))}
                     {sendMessage.isPending && (
                         <div className="flex justify-start">
-                            <div className="rounded-2xl bg-slate-100 px-4 py-3 text-sm text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                            <div className="rounded-2xl bg-elevated px-4 py-3 text-sm text-muted bg-elevated text-muted">
                                 Thinking...
                             </div>
                         </div>
@@ -108,13 +108,13 @@ export function ChatPage() {
                 </div>
 
                 {messages.length <= 1 && (
-                    <div className="flex flex-wrap gap-2 border-x border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
+                    <div className="flex flex-wrap gap-2 border-x border-border bg-surface px-4 py-3 border-border bg-surface">
                         {SUGGESTIONS.map((text) => (
                             <button
                                 key={text}
                                 type="button"
                                 onClick={() => handleSuggestion(text)}
-                                className="rounded-full border border-slate-300 px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800"
+                                className="rounded-full border border-border px-3 py-1.5 text-xs text-secondary hover:bg-elevated  text-secondary hover:bg-surface-hover"
                             >
                                 {text}
                             </button>
@@ -124,19 +124,19 @@ export function ChatPage() {
 
                 <form
                     onSubmit={handleSubmit}
-                    className="flex gap-2 rounded-b-2xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900"
+                    className="flex gap-2 rounded-b-2xl border border-border bg-surface p-3 border-border bg-surface"
                 >
                     <input
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder="Type a message... e.g. 'Spent 200 on coffee'"
-                        className="flex-1 rounded-lg border border-slate-300 px-4 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                        className="flex-1 rounded-lg border border-border px-4 py-2 text-sm border-border bg-elevated text-foreground"
                         disabled={sendMessage.isPending}
                     />
                     <button
                         type="submit"
                         disabled={sendMessage.isPending || !input.trim()}
-                        className="rounded-lg bg-slate-900 px-4 py-2 text-white disabled:opacity-60 dark:bg-slate-100 dark:text-slate-900"
+                        className="rounded-lg bg-accent px-4 py-2 text-white disabled:opacity-60"
                     >
                         <Send size={16} />
                     </button>

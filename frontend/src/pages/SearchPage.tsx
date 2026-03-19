@@ -60,19 +60,19 @@ export function SearchPage() {
     return (
         <PageShell title="Search">
             <div className="space-y-4">
-                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
                     <div className="grid gap-3 md:grid-cols-4">
                         <input
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
                             placeholder="Search name / notes"
-                            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                            className="rounded-lg border border-border px-3 py-2 text-sm"
                         />
 
                         <select
                             value={accountId}
                             onChange={(e) => setAccountId(e.target.value)}
-                            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                            className="rounded-lg border border-border px-3 py-2 text-sm"
                         >
                             <option value="">All accounts</option>
                             {accounts.map((account) => (
@@ -85,7 +85,7 @@ export function SearchPage() {
                         <select
                             value={categoryId}
                             onChange={(e) => setCategoryId(e.target.value)}
-                            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                            className="rounded-lg border border-border px-3 py-2 text-sm"
                         >
                             <option value="">All categories</option>
                             {categories.map((category) => (
@@ -98,7 +98,7 @@ export function SearchPage() {
                         <select
                             value={type}
                             onChange={(e) => setType(e.target.value as 'income' | 'expense' | 'all')}
-                            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                            className="rounded-lg border border-border px-3 py-2 text-sm"
                         >
                             <option value="all">All</option>
                             <option value="income">Income</option>
@@ -107,7 +107,7 @@ export function SearchPage() {
                     </div>
                 </section>
 
-                <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                <section className="space-y-3 rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
                     <SortableTable
                         columns={columns}
                         hasRows={items.length > 0}
@@ -129,7 +129,7 @@ export function SearchPage() {
                             type="button"
                             onClick={() => query.fetchNextPage()}
                             disabled={!query.hasNextPage || query.isFetchingNextPage}
-                            className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-700 disabled:opacity-60"
+                            className="rounded-lg border border-border px-4 py-2 text-sm text-secondary disabled:opacity-60"
                         >
                             {query.isFetchingNextPage ? 'Loading...' : query.hasNextPage ? 'Load More' : 'No More Results'}
                         </button>

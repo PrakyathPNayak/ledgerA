@@ -27,20 +27,20 @@ export function SortableTable({
     hasRows,
 }: SortableTableProps) {
     return (
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
             <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-slate-200">
-                    <thead className="bg-slate-50">
+                <table className="min-w-full divide-y divide-border">
+                    <thead className="bg-elevated">
                         <tr>
                             {columns.map((column) => {
                                 const active = sortBy === column.key
                                 return (
-                                    <th key={column.key} className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 ${column.className ?? ''}`}>
+                                    <th key={column.key} className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted ${column.className ?? ''}`}>
                                         {column.sortable && onSort ? (
                                             <button
                                                 type="button"
                                                 onClick={() => onSort(column.key)}
-                                                className="inline-flex items-center gap-1 hover:text-slate-900"
+                                                className="inline-flex items-center gap-1 hover:text-foreground"
                                             >
                                                 <span>{column.label}</span>
                                                 {active ? <span>{sortDir === 'asc' ? '↑' : '↓'}</span> : null}
@@ -53,10 +53,10 @@ export function SortableTable({
                             })}
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 bg-white">{hasRows ? children : null}</tbody>
+                    <tbody className="divide-y divide-border-subtle bg-surface">{hasRows ? children : null}</tbody>
                 </table>
             </div>
-            {!hasRows ? <p className="px-4 py-8 text-center text-sm text-slate-500">{emptyMessage}</p> : null}
+            {!hasRows ? <p className="px-4 py-8 text-center text-sm text-muted">{emptyMessage}</p> : null}
         </div>
     )
 }

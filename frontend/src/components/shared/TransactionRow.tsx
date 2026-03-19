@@ -22,16 +22,16 @@ export function TransactionRow({ transaction, accountName, categoryName, subcate
     return (
         <tr
             onClick={() => onClick?.(transaction)}
-            className="cursor-pointer transition-colors hover:bg-slate-50"
+            className="cursor-pointer transition-colors hover:bg-elevated"
         >
-            <td className="px-4 py-3 text-sm text-slate-900">{transaction.transaction_date}</td>
-            <td className="px-4 py-3 text-sm font-medium text-slate-900">{transaction.name}</td>
-            <td className="px-4 py-3 text-sm text-slate-600">{accountName ?? 'Unknown'}</td>
-            <td className="px-4 py-3 text-sm text-slate-600">
+            <td className="px-4 py-3 text-sm text-foreground">{transaction.transaction_date}</td>
+            <td className="px-4 py-3 text-sm font-medium text-foreground">{transaction.name}</td>
+            <td className="px-4 py-3 text-sm text-secondary">{accountName ?? 'Unknown'}</td>
+            <td className="px-4 py-3 text-sm text-secondary">
                 {categoryName ?? 'Unknown'}
-                {subcategoryName ? <span className="text-slate-400"> / {subcategoryName}</span> : null}
+                {subcategoryName ? <span className="text-muted"> / {subcategoryName}</span> : null}
             </td>
-            <td className={`px-4 py-3 text-right text-sm font-semibold ${isIncome ? 'text-emerald-600' : 'text-rose-600'}`}>
+            <td className={`px-4 py-3 text-right text-sm font-semibold ${isIncome ? 'text-positive' : 'text-negative'}`}>
                 {currency(transaction.amount)}
             </td>
         </tr>

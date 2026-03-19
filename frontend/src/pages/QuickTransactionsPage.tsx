@@ -75,14 +75,14 @@ export function QuickTransactionsPage() {
     return (
         <PageShell title="Quick Transactions">
             <div className="grid gap-4 lg:grid-cols-[380px,1fr]">
-                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                    <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">New Template</h2>
+                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
+                    <h2 className="text-base font-semibold text-foreground">New Template</h2>
                     <form className="mt-3 space-y-3" onSubmit={handleCreate}>
                         <input
                             value={label}
                             onChange={(e) => setLabel(e.target.value)}
                             placeholder="Label"
-                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                            className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                             required
                         />
                         <input
@@ -90,12 +90,12 @@ export function QuickTransactionsPage() {
                             onChange={(e) => setAmount(e.target.value)}
                             inputMode="decimal"
                             placeholder="Amount"
-                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                            className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                         />
                         <select
                             value={accountId}
                             onChange={(e) => setAccountId(e.target.value)}
-                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                            className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                         >
                             <option value="">Any account</option>
                             {accounts.map((account) => (
@@ -107,7 +107,7 @@ export function QuickTransactionsPage() {
                         <select
                             value={categoryId}
                             onChange={(e) => setCategoryId(e.target.value)}
-                            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                            className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                         >
                             <option value="">Any category</option>
                             {categories.map((category) => (
@@ -119,17 +119,17 @@ export function QuickTransactionsPage() {
                         <button
                             type="submit"
                             disabled={createQuick.isPending}
-                            className="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+                            className="w-full rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
                         >
                             {createQuick.isPending ? 'Saving...' : 'Create Template'}
                         </button>
                     </form>
                 </section>
 
-                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
                     <div className="mb-3 flex items-center justify-between">
-                        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Templates</h2>
-                        <p className="text-xs text-slate-500">Drag to reorder</p>
+                        <h2 className="text-base font-semibold text-foreground">Templates</h2>
+                        <p className="text-xs text-muted">Drag to reorder</p>
                     </div>
 
                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -178,20 +178,20 @@ function QuickTransactionCard({
         <article
             ref={setNodeRef}
             style={style}
-            className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-border bg-elevated p-3 border-border bg-elevated"
         >
             <div className="flex items-start justify-between gap-3">
                 <button
                     type="button"
-                    className="cursor-grab rounded-md border border-slate-300 px-2 py-1 text-xs text-slate-600"
+                    className="cursor-grab rounded-md border border-border px-2 py-1 text-xs text-secondary"
                     {...attributes}
                     {...listeners}
                 >
                     Drag
                 </button>
                 <div className="flex-1">
-                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{item.label}</p>
-                    <p className="mt-1 text-xs text-slate-500">
+                    <p className="text-sm font-semibold text-foreground">{item.label}</p>
+                    <p className="mt-1 text-xs text-muted">
                         {accountName ?? 'Any account'} • {categoryName ?? 'Any category'}
                     </p>
                 </div>
@@ -199,7 +199,7 @@ function QuickTransactionCard({
                     type="button"
                     onClick={onExecute}
                     disabled={executing}
-                    className="rounded-md bg-slate-900 px-3 py-1.5 text-xs font-medium text-white disabled:opacity-60"
+                    className="rounded-md bg-accent px-3 py-1.5 text-xs font-medium text-white disabled:opacity-60"
                 >
                     Run
                 </button>

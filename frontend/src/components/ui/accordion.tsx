@@ -8,7 +8,7 @@ const AccordionItem = ({
     className,
     ...props
 }: React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>) => (
-    <AccordionPrimitive.Item className={cn('border-b border-slate-100', className)} {...props} />
+    <AccordionPrimitive.Item className={cn('border-b border-border-subtle', className)} {...props} />
 )
 AccordionItem.displayName = 'AccordionItem'
 
@@ -20,13 +20,13 @@ const AccordionTrigger = ({
     <AccordionPrimitive.Header className="flex">
         <AccordionPrimitive.Trigger
             className={cn(
-                'flex flex-1 items-center justify-between py-4 text-sm font-semibold text-slate-900 transition-all hover:underline [&[data-state=open]>svg]:rotate-180',
+                'flex flex-1 items-center justify-between py-4 text-sm font-semibold text-foreground transition-all hover:underline [&[data-state=open]>svg]:rotate-180',
                 className,
             )}
             {...props}
         >
             {children}
-            <ChevronDown className="h-4 w-4 shrink-0 text-slate-500 transition-transform duration-200" />
+            <ChevronDown className="h-4 w-4 shrink-0 text-muted transition-transform duration-200" />
         </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
 )
@@ -44,7 +44,7 @@ const AccordionContent = ({
         )}
         {...props}
     >
-        <div className={cn('pb-4 pt-0 leading-6 text-slate-600')}>{children}</div>
+        <div className={cn('pb-4 pt-0 leading-6 text-secondary')}>{children}</div>
     </AccordionPrimitive.Content>
 )
 AccordionContent.displayName = AccordionPrimitive.Content.displayName

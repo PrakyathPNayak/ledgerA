@@ -15,7 +15,7 @@ import { useAuthStore } from '@/store/authStore'
 function RequireAuth() {
     const { user, isLoading } = useAuthStore()
     if (isLoading) {
-        return <div className="grid min-h-screen place-items-center text-sm text-slate-500">Checking session...</div>
+        return <div className="grid min-h-screen place-items-center text-sm text-muted">Checking session...</div>
     }
     if (!user) {
         return <Navigate to="/login" replace />

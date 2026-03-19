@@ -63,13 +63,13 @@ export function DashboardPage() {
                     <StatCard label="Net" value={money(stats?.net ?? 0)} tone="neutral" />
                 </section>
 
-                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
                     <div className="mb-4 flex items-center justify-between">
-                        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Recent Transactions</h2>
+                        <h2 className="text-lg font-semibold text-foreground">Recent Transactions</h2>
                         <button
                             type="button"
                             onClick={() => setIsAddOpen(true)}
-                            className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white"
+                            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white"
                         >
                             Add Transaction
                         </button>
@@ -110,15 +110,15 @@ export function DashboardPage() {
 function StatCard({ label, value, tone }: { label: string; value: string; tone: 'income' | 'expense' | 'neutral' }) {
     const toneClass =
         tone === 'income'
-            ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950'
+            ? 'border-positive/20 bg-positive-muted border-positive/20 bg-positive-muted'
             : tone === 'expense'
-                ? 'border-rose-200 bg-rose-50 dark:border-rose-800 dark:bg-rose-950'
-                : 'border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800'
+                ? 'border-negative/20 bg-negative-muted border-negative/20 bg-negative-muted'
+                : 'border-border bg-elevated border-border bg-elevated'
 
     return (
         <article className={`rounded-2xl border p-4 ${toneClass}`}>
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</p>
-            <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-slate-100">{value}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted">{label}</p>
+            <p className="mt-2 text-2xl font-bold text-foreground">{value}</p>
         </article>
     )
 }

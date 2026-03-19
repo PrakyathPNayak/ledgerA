@@ -69,7 +69,7 @@ export function PageShell({ title, children }: PageShellProps) {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div className="flex min-h-screen bg-elevated text-foreground bg-app text-foreground">
       <Sidebar />
       <div className="flex min-h-screen flex-1 flex-col">
         {!online && (
@@ -92,22 +92,22 @@ export function PageShell({ title, children }: PageShellProps) {
 
       {isFirstTime && (
         <div className="fixed inset-0 z-40 grid place-items-center bg-black/30">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl dark:bg-slate-900">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Set Base Currency</h3>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+          <div className="w-full max-w-md rounded-2xl bg-surface p-6 shadow-xl bg-surface">
+            <h3 className="text-lg font-semibold text-foreground">Set Base Currency</h3>
+            <p className="mt-2 text-sm text-muted">
               Choose your base currency once. It cannot be changed later.
             </p>
             <select
               value={selectedCurrency}
               onChange={(e) => setSelectedCurrency(e.target.value)}
-              className="mt-3 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              className="mt-3 w-full rounded-lg border border-border px-3 py-2 text-sm border-border bg-elevated text-foreground"
             >
               {CURRENCIES.map((code) => (
                 <option key={code} value={code}>{code}</option>
               ))}
             </select>
             <button
-              className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm text-white disabled:opacity-60 dark:bg-slate-100 dark:text-slate-900"
+              className="mt-4 rounded-lg bg-accent px-4 py-2 text-sm text-white disabled:opacity-60"
               onClick={handleSaveCurrency}
               disabled={savingCurrency}
             >

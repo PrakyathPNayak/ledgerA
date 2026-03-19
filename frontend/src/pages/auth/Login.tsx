@@ -75,15 +75,15 @@ export function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-slate-200 px-4">
+        <div className="min-h-screen bg-app px-4">
             <div className="mx-auto flex min-h-screen w-full max-w-md items-center justify-center">
-                <div className="w-full rounded-2xl border border-slate-200 bg-white p-7 shadow-lg">
-                    <h1 className="text-2xl font-bold tracking-tight text-slate-900">Sign In</h1>
-                    <p className="mt-1 text-sm text-slate-500">Continue to Expenditure Tracker</p>
+                <div className="w-full rounded-2xl border border-border bg-surface p-7 shadow-lg">
+                    <h1 className="text-2xl font-bold tracking-tight text-foreground">Sign In</h1>
+                    <p className="mt-1 text-sm text-muted">Continue to Expenditure Tracker</p>
 
                     <form className="mt-6 space-y-4" onSubmit={handleEmailSignIn}>
                         <div className="space-y-1">
-                            <label htmlFor="email" className="text-sm font-medium text-slate-700">
+                            <label htmlFor="email" className="text-sm font-medium text-secondary">
                                 Email
                             </label>
                             <Input
@@ -98,7 +98,7 @@ export function LoginPage() {
                         </div>
 
                         <div className="space-y-1">
-                            <label htmlFor="password" className="text-sm font-medium text-slate-700">
+                            <label htmlFor="password" className="text-sm font-medium text-secondary">
                                 Password
                             </label>
                             <Input
@@ -123,7 +123,7 @@ export function LoginPage() {
                         </Button>
                     </form>
 
-                    <div className="my-4 h-px bg-slate-200" />
+                    <div className="my-4 h-px bg-surface-hover" />
 
                     <Button
                         type="button"

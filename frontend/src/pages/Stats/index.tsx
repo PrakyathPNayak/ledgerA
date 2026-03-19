@@ -101,11 +101,11 @@ function BarsTooltip({ active, payload, label }: BarsTooltipProps) {
     const net = income + expense
 
     return (
-        <div className="rounded-lg border border-slate-200 bg-white p-3 text-xs shadow-lg dark:border-slate-700 dark:bg-slate-800">
-            <p className="font-semibold text-slate-900 dark:text-slate-100">{label}</p>
-            <p className="mt-1 text-emerald-700 dark:text-emerald-400">Income: {formatMoney(income)}</p>
-            <p className="text-rose-700 dark:text-rose-400">Expense: {formatMoney(expense)}</p>
-            <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">Net: {formatMoney(net)}</p>
+        <div className="rounded-lg border border-border bg-surface p-3 text-xs shadow-lg border-border bg-elevated">
+            <p className="font-semibold text-foreground">{label}</p>
+            <p className="mt-1 text-positive">Income: {formatMoney(income)}</p>
+            <p className="text-negative">Expense: {formatMoney(expense)}</p>
+            <p className="mt-1 font-semibold text-foreground">Net: {formatMoney(net)}</p>
         </div>
     )
 }
@@ -118,10 +118,10 @@ function DonutTooltip({ active, payload }: DonutTooltipProps) {
     const item = payload[0].payload
 
     return (
-        <div className="rounded-lg border border-slate-200 bg-white p-3 text-xs shadow-lg dark:border-slate-700 dark:bg-slate-800">
-            <p className="font-semibold text-slate-900 dark:text-slate-100">{item.name}</p>
-            <p className="mt-1 text-slate-700 dark:text-slate-300">Amount: {formatMoney(item.amount)}</p>
-            <p className="text-slate-600 dark:text-slate-400">Share: {item.percentage.toFixed(2)}%</p>
+        <div className="rounded-lg border border-border bg-surface p-3 text-xs shadow-lg border-border bg-elevated">
+            <p className="font-semibold text-foreground">{item.name}</p>
+            <p className="mt-1 text-secondary">Amount: {formatMoney(item.amount)}</p>
+            <p className="text-secondary text-muted">Share: {item.percentage.toFixed(2)}%</p>
         </div>
     )
 }
@@ -199,14 +199,14 @@ export function StatsPage() {
     return (
         <PageShell title="Stats">
             <div className="space-y-6">
-                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
                     <div className="grid gap-3 md:grid-cols-4">
                         <label className="space-y-1">
-                            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Period</span>
+                            <span className="text-xs font-semibold uppercase tracking-wide text-muted">Period</span>
                             <select
                                 value={period}
                                 onChange={(event) => setPeriod(event.target.value as Period)}
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                             >
                                 <option value="day">Day</option>
                                 <option value="week">Week</option>
@@ -216,11 +216,11 @@ export function StatsPage() {
                         </label>
 
                         <label className="space-y-1">
-                            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">Value</span>
+                            <span className="text-xs font-semibold uppercase tracking-wide text-muted">Value</span>
                             <select
                                 value={value}
                                 onChange={(event) => setValue(event.target.value)}
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                             >
                                 {valueOptions.map((option) => (
                                     <option key={option.value} value={option.value}>
@@ -231,11 +231,11 @@ export function StatsPage() {
                         </label>
 
                         <label className="space-y-1">
-                            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">Account</span>
+                            <span className="text-xs font-semibold uppercase tracking-wide text-muted">Account</span>
                             <select
                                 value={accountId}
                                 onChange={(event) => setAccountId(event.target.value)}
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                className="w-full rounded-lg border border-border px-3 py-2 text-sm"
                             >
                                 <option value="">All accounts</option>
                                 {accounts.map((account) => (
@@ -251,7 +251,7 @@ export function StatsPage() {
                                 type="button"
                                 onClick={handleExportPdf}
                                 disabled={isExporting}
-                                className="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+                                className="w-full rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
                             >
                                 {isExporting ? 'Exporting...' : 'Export PDF'}
                             </button>
@@ -265,11 +265,11 @@ export function StatsPage() {
                     <StatCard label="Net" value={formatMoney(stats?.net ?? 0)} tone="neutral" />
                 </section>
 
-                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                    <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Income and Expense Timeline</h2>
+                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
+                    <h2 className="text-base font-semibold text-foreground">Income and Expense Timeline</h2>
                     <div className="mt-4" style={{ height: 320 }}>
                         {isLoading ? (
-                            <p className="text-sm text-slate-500">Loading chart...</p>
+                            <p className="text-sm text-muted">Loading chart...</p>
                         ) : (
                             <ResponsiveContainer width="100%" height={320}>
                                 <ComposedChart data={barData} margin={{ top: 10, right: 8, left: 0, bottom: 0 }}>
@@ -286,8 +286,8 @@ export function StatsPage() {
                 </section>
 
                 <section className="grid gap-4 lg:grid-cols-2">
-                    <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Expense by Category</h2>
+                    <article className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
+                        <h2 className="text-base font-semibold text-foreground">Expense by Category</h2>
                         <div className="mt-4 h-72">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
@@ -309,8 +309,8 @@ export function StatsPage() {
                         </div>
                     </article>
 
-                    <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Income by Category</h2>
+                    <article className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
+                        <h2 className="text-base font-semibold text-foreground">Income by Category</h2>
                         <div className="mt-4 h-72">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
@@ -340,15 +340,15 @@ export function StatsPage() {
 function StatCard({ label, value, tone }: { label: string; value: string; tone: 'income' | 'expense' | 'neutral' }) {
     const toneClass =
         tone === 'income'
-            ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950'
+            ? 'border-positive/20 bg-positive-muted border-positive/20 bg-positive-muted'
             : tone === 'expense'
-                ? 'border-rose-200 bg-rose-50 dark:border-rose-800 dark:bg-rose-950'
-                : 'border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800'
+                ? 'border-negative/20 bg-negative-muted border-negative/20 bg-negative-muted'
+                : 'border-border bg-elevated border-border bg-elevated'
 
     return (
         <article className={`rounded-2xl border p-4 ${toneClass}`}>
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</p>
-            <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-slate-100">{value}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted">{label}</p>
+            <p className="mt-2 text-2xl font-bold text-foreground">{value}</p>
         </article>
     )
 }
