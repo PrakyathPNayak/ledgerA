@@ -48,14 +48,14 @@ export function HelpPage() {
     return (
         <PageShell title="Help">
             <div className="space-y-4">
-                <section className="rounded-2xl border border-border bg-surface p-6 shadow-sm border-border bg-surface">
+                <section className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
                     <h2 className="text-2xl font-bold tracking-tight text-foreground">ledgerA Help Center</h2>
                     <p className="mt-2 text-sm leading-6 text-secondary">
                         Find quick answers about accounts, transactions, reports, and productivity workflows.
                     </p>
                 </section>
 
-                <section className="rounded-2xl border border-border bg-surface px-6 shadow-sm border-border bg-surface">
+                <section className="rounded-2xl border border-border bg-surface px-6 shadow-sm">
                     <Accordion type="multiple">
                         {sections.map((section) => (
                             <AccordionItem key={section.id} value={section.id}>

@@ -79,13 +79,13 @@ export function ChatPage() {
     return (
         <PageShell title="Chat">
             <div className="mx-auto flex h-[calc(100vh-10rem)] max-w-3xl flex-col">
-                <div className="flex-1 space-y-4 overflow-y-auto rounded-t-2xl border border-b-0 border-border bg-surface p-4 border-border bg-surface">
+                <div className="flex-1 space-y-4 overflow-y-auto rounded-t-2xl border border-b-0 border-border bg-surface p-4">
                     {messages.map((msg, i) => (
                         <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                             <div
                                 className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap ${msg.role === 'user'
                                         ? 'bg-accent text-white'
-                                        : 'bg-elevated text-foreground bg-elevated text-foreground'
+                                        : 'bg-elevated text-foreground'
                                     }`}
                             >
                                 {msg.content}
@@ -99,7 +99,7 @@ export function ChatPage() {
                     ))}
                     {sendMessage.isPending && (
                         <div className="flex justify-start">
-                            <div className="rounded-2xl bg-elevated px-4 py-3 text-sm text-muted bg-elevated text-muted">
+                            <div className="rounded-2xl bg-elevated px-4 py-3 text-sm text-muted">
                                 Thinking...
                             </div>
                         </div>
@@ -108,7 +108,7 @@ export function ChatPage() {
                 </div>
 
                 {messages.length <= 1 && (
-                    <div className="flex flex-wrap gap-2 border-x border-border bg-surface px-4 py-3 border-border bg-surface">
+                    <div className="flex flex-wrap gap-2 border-x border-border bg-surface px-4 py-3">
                         {SUGGESTIONS.map((text) => (
                             <button
                                 key={text}
@@ -124,7 +124,7 @@ export function ChatPage() {
 
                 <form
                     onSubmit={handleSubmit}
-                    className="flex gap-2 rounded-b-2xl border border-border bg-surface p-3 border-border bg-surface"
+                    className="flex gap-2 rounded-b-2xl border border-border bg-surface p-3"
                 >
                     <input
                         value={input}

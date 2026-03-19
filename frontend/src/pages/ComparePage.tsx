@@ -60,7 +60,7 @@ function formatPct(value: number): string {
 
 function PeriodCard({ data, label }: { data: ComparePeriodData; label: string }) {
     return (
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm border-border bg-surface">
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
             <h3 className="text-sm font-semibold uppercase tracking-wide text-muted">{label}</h3>
             <p className="mt-1 text-xs text-muted">{data.label}</p>
 
@@ -122,7 +122,7 @@ export function ComparePage() {
     return (
         <PageShell title="Compare">
             <div className="space-y-6">
-                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
+                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
                     <div className="grid gap-3 md:grid-cols-4">
                         <label className="space-y-1">
                             <span className="text-xs font-semibold uppercase tracking-wide text-muted">Period</span>
@@ -185,15 +185,15 @@ export function ComparePage() {
                 {compare && (
                     <>
                         <section className="grid gap-4 md:grid-cols-3">
-                            <article className={`rounded-2xl border p-4 ${compare.income_change_pct >= 0 ? 'border-positive/20 bg-positive-muted border-positive/20 bg-positive-muted' : 'border-negative/20 bg-negative-muted border-negative/20 bg-negative-muted'}`}>
+                            <article className={`rounded-2xl border p-4 ${compare.income_change_pct >= 0 ? 'border-positive/20 bg-positive-muted' : 'border-negative/20 bg-negative-muted'}`}>
                                 <p className="text-xs font-semibold uppercase tracking-wide text-muted">Income Change</p>
                                 <p className="mt-2 text-2xl font-bold text-foreground">{formatPct(compare.income_change_pct)}</p>
                             </article>
-                            <article className={`rounded-2xl border p-4 ${compare.expense_change_pct <= 0 ? 'border-positive/20 bg-positive-muted border-positive/20 bg-positive-muted' : 'border-negative/20 bg-negative-muted border-negative/20 bg-negative-muted'}`}>
+                            <article className={`rounded-2xl border p-4 ${compare.expense_change_pct <= 0 ? 'border-positive/20 bg-positive-muted' : 'border-negative/20 bg-negative-muted'}`}>
                                 <p className="text-xs font-semibold uppercase tracking-wide text-muted">Expense Change</p>
                                 <p className="mt-2 text-2xl font-bold text-foreground">{formatPct(compare.expense_change_pct)}</p>
                             </article>
-                            <article className={`rounded-2xl border p-4 ${compare.net_change >= 0 ? 'border-positive/20 bg-positive-muted border-positive/20 bg-positive-muted' : 'border-negative/20 bg-negative-muted border-negative/20 bg-negative-muted'}`}>
+                            <article className={`rounded-2xl border p-4 ${compare.net_change >= 0 ? 'border-positive/20 bg-positive-muted' : 'border-negative/20 bg-negative-muted'}`}>
                                 <p className="text-xs font-semibold uppercase tracking-wide text-muted">Net Change</p>
                                 <p className="mt-2 text-2xl font-bold text-foreground">{formatMoney(compare.net_change)}</p>
                             </article>

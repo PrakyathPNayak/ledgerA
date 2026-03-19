@@ -2,12 +2,14 @@ import { useMemo, useState } from 'react'
 
 import { PageShell } from '@/components/layout/PageShell'
 import { AddTransactionModal } from '@/components/shared/AddTransactionModal'
+import { EditTransactionModal } from '@/components/shared/EditTransactionModal'
+import { TransactionDetailModal } from '@/components/shared/TransactionDetailModal'
 import { TransactionRow } from '@/components/shared/TransactionRow'
 import { SortableTable } from '@/components/shared/SortableTable'
 import { useAccounts } from '@/hooks/useAccounts'
 import { useCategories } from '@/hooks/useCategories'
 import { useStats } from '@/hooks/useStats'
-import { useTransactions } from '@/hooks/useTransactions'
+import { useTransactions, useDeleteTransaction } from '@/hooks/useTransactions'
 import type { Transaction } from '@/types'
 
 const tableColumns = [
@@ -24,6 +26,8 @@ function money(value: number): string {
 
 export function DashboardPage() {
     const [isAddOpen, setIsAddOpen] = useState(false)
+    const [selectedTx, setSelectedTx] = useState<Transaction | null>(null)
+    const [editingTx, setEditingTx] = useState<Transaction | null>(null)
     const [sortBy, setSortBy] = useState<'transaction_date' | 'amount' | 'name'>('transaction_date')
     const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
 
@@ -31,6 +35,7 @@ export function DashboardPage() {
     const { data: accounts = [] } = useAccounts()
     const { data: categories = [] } = useCategories()
     const { data: stats } = useStats({ period: 'month', value: new Date().toISOString().slice(0, 7) })
+    const deleteMutation = useDeleteTransaction()
 
     const accountMap = useMemo(() => Object.fromEntries(accounts.map((item) => [item.id, item.name])), [accounts])
     const categoryMap = useMemo(() => Object.fromEntries(categories.map((item) => [item.id, item.name])), [categories])
@@ -63,7 +68,7 @@ export function DashboardPage() {
                     <StatCard label="Net" value={money(stats?.net ?? 0)} tone="neutral" />
                 </section>
 
-                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
+                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
                     <div className="mb-4 flex items-center justify-between">
                         <h2 className="text-lg font-semibold text-foreground">Recent Transactions</h2>
                         <button
@@ -90,6 +95,7 @@ export function DashboardPage() {
                                 accountName={accountMap[transaction.account_id]}
                                 categoryName={categoryMap[transaction.category_id]}
                                 subcategoryName={subcategoryMap[transaction.subcategory_id]}
+                                onClick={setSelectedTx}
                             />
                         ))}
                     </SortableTable>
@@ -103,6 +109,21 @@ export function DashboardPage() {
                     void refetch()
                 }}
             />
+
+            <TransactionDetailModal
+                transaction={selectedTx}
+                accountName={selectedTx ? accountMap[selectedTx.account_id] : undefined}
+                categoryName={selectedTx ? categoryMap[selectedTx.category_id] : undefined}
+                subcategoryName={selectedTx ? subcategoryMap[selectedTx.subcategory_id] : undefined}
+                onClose={() => setSelectedTx(null)}
+                onEdit={(tx) => { setSelectedTx(null); setEditingTx(tx) }}
+                onDelete={(tx) => { setSelectedTx(null); deleteMutation.mutate(tx.id) }}
+            />
+
+            <EditTransactionModal
+                transaction={editingTx}
+                onClose={() => setEditingTx(null)}
+            />
         </PageShell>
     )
 }
@@ -110,10 +131,10 @@ export function DashboardPage() {
 function StatCard({ label, value, tone }: { label: string; value: string; tone: 'income' | 'expense' | 'neutral' }) {
     const toneClass =
         tone === 'income'
-            ? 'border-positive/20 bg-positive-muted border-positive/20 bg-positive-muted'
+            ? 'border-positive/20 bg-positive-muted'
             : tone === 'expense'
-                ? 'border-negative/20 bg-negative-muted border-negative/20 bg-negative-muted'
-                : 'border-border bg-elevated border-border bg-elevated'
+                ? 'border-negative/20 bg-negative-muted'
+                : 'border-border bg-elevated'
 
     return (
         <article className={`rounded-2xl border p-4 ${toneClass}`}>

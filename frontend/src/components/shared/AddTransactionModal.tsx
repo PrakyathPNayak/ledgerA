@@ -216,7 +216,7 @@ export function AddTransactionModal({ isOpen, onClose, onCreated }: AddTransacti
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div className="w-full max-w-2xl rounded-2xl border border-border bg-surface shadow-xl border-border bg-surface">
+            <div className="w-full max-w-2xl rounded-2xl border border-border bg-surface shadow-xl">
                 <div className="flex items-center justify-between border-b border-border px-6 py-4 border-border">
                     <h2 className="text-xl font-semibold text-foreground">Add Transaction</h2>
                     <button

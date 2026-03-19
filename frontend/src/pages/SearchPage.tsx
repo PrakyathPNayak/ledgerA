@@ -2,10 +2,13 @@ import { useState } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 
 import { PageShell } from '@/components/layout/PageShell'
+import { EditTransactionModal } from '@/components/shared/EditTransactionModal'
+import { TransactionDetailModal } from '@/components/shared/TransactionDetailModal'
 import { SortableTable } from '@/components/shared/SortableTable'
 import { TransactionRow } from '@/components/shared/TransactionRow'
 import { useAccounts } from '@/hooks/useAccounts'
 import { useCategories } from '@/hooks/useCategories'
+import { useDeleteTransaction } from '@/hooks/useTransactions'
 import api from '@/lib/api'
 import type { Transaction } from '@/types'
 
@@ -22,9 +25,12 @@ export function SearchPage() {
     const [accountId, setAccountId] = useState('')
     const [categoryId, setCategoryId] = useState('')
     const [type, setType] = useState<'income' | 'expense' | 'all'>('all')
+    const [selectedTx, setSelectedTx] = useState<Transaction | null>(null)
+    const [editingTx, setEditingTx] = useState<Transaction | null>(null)
 
     const { data: accounts = [] } = useAccounts()
     const { data: categories = [] } = useCategories()
+    const deleteMutation = useDeleteTransaction()
 
     const filters = {
         search: searchText || undefined,
@@ -60,7 +66,7 @@ export function SearchPage() {
     return (
         <PageShell title="Search">
             <div className="space-y-4">
-                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
+                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
                     <div className="grid gap-3 md:grid-cols-4">
                         <input
                             value={searchText}
@@ -107,7 +113,7 @@ export function SearchPage() {
                     </div>
                 </section>
 
-                <section className="space-y-3 rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
+                <section className="space-y-3 rounded-2xl border border-border bg-surface p-4 shadow-sm">
                     <SortableTable
                         columns={columns}
                         hasRows={items.length > 0}
@@ -120,6 +126,7 @@ export function SearchPage() {
                                 accountName={accountMap[transaction.account_id]}
                                 categoryName={categoryMap[transaction.category_id]}
                                 subcategoryName={subcategoryMap[transaction.subcategory_id]}
+                                onClick={setSelectedTx}
                             />
                         ))}
                     </SortableTable>
@@ -136,6 +143,21 @@ export function SearchPage() {
                     </div>
                 </section>
             </div>
+
+            <TransactionDetailModal
+                transaction={selectedTx}
+                accountName={selectedTx ? accountMap[selectedTx.account_id] : undefined}
+                categoryName={selectedTx ? categoryMap[selectedTx.category_id] : undefined}
+                subcategoryName={selectedTx ? subcategoryMap[selectedTx.subcategory_id] : undefined}
+                onClose={() => setSelectedTx(null)}
+                onEdit={(tx) => { setSelectedTx(null); setEditingTx(tx) }}
+                onDelete={(tx) => { setSelectedTx(null); deleteMutation.mutate(tx.id) }}
+            />
+
+            <EditTransactionModal
+                transaction={editingTx}
+                onClose={() => setEditingTx(null)}
+            />
         </PageShell>
     )
 }

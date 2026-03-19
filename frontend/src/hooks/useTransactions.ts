@@ -35,7 +35,36 @@ export function useCreateTransaction() {
             notes?: string
             is_scheduled?: boolean
         }) => api.post('/transactions', payload),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: transactionQueryKeys.all }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: transactionQueryKeys.all })
+            queryClient.invalidateQueries({ queryKey: ['accounts'] })
+            queryClient.invalidateQueries({ queryKey: ['stats'] })
+        },
+    })
+}
+
+/**
+ * @description Updates a transaction and refreshes all related caches.
+ */
+export function useUpdateTransaction() {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: ({ id, ...payload }: {
+            id: string
+            account_id?: string
+            category_id?: string
+            subcategory_id?: string
+            name?: string
+            amount?: number
+            transaction_date?: string
+            notes?: string
+            is_scheduled?: boolean
+        }) => api.patch(`/transactions/${id}`, payload),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: transactionQueryKeys.all })
+            queryClient.invalidateQueries({ queryKey: ['accounts'] })
+            queryClient.invalidateQueries({ queryKey: ['stats'] })
+        },
     })
 }
 
@@ -46,6 +75,10 @@ export function useDeleteTransaction() {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: (id: string) => api.delete(`/transactions/${id}`),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: transactionQueryKeys.all }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: transactionQueryKeys.all })
+            queryClient.invalidateQueries({ queryKey: ['accounts'] })
+            queryClient.invalidateQueries({ queryKey: ['stats'] })
+        },
     })
 }

@@ -49,7 +49,7 @@ export function SettingsSheet({
   return (
     <div className="fixed inset-0 z-50 bg-black/20" onClick={onClose}>
       <div
-        className="absolute right-0 top-0 h-full w-full max-w-md border-l border-border bg-surface p-6 shadow-2xl border-border bg-surface"
+        className="absolute right-0 top-0 h-full w-full max-w-md border-l border-border bg-surface p-6 shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
         <h2 className="text-lg font-semibold text-foreground">Settings</h2>

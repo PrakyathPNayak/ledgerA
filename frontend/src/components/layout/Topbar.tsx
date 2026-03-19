@@ -11,7 +11,7 @@ interface TopbarProps {
 
 export function Topbar({ title, onOpenSettings, userInitial }: TopbarProps) {
   return (
-    <header className="flex items-center justify-between border-b border-border bg-surface px-6 py-3 border-border bg-surface">
+    <header className="flex items-center justify-between border-b border-border bg-surface px-6 py-3">
       <div className="flex items-center gap-3">
         <div className="grid h-9 w-9 place-items-center rounded-full bg-accent text-sm font-bold text-white">
           {userInitial ?? 'U'}

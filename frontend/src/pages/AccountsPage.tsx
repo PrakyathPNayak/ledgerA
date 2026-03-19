@@ -50,7 +50,7 @@ export function AccountsPage() {
 
     return (
         <PageShell title="Accounts">
-            <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
+            <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
                 <div className="mb-4 flex items-center justify-between">
                     <h2 className="text-lg font-semibold text-foreground">All Accounts</h2>
                     <div className="flex items-center gap-3">

@@ -75,7 +75,7 @@ export function QuickTransactionsPage() {
     return (
         <PageShell title="Quick Transactions">
             <div className="grid gap-4 lg:grid-cols-[380px,1fr]">
-                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
+                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
                     <h2 className="text-base font-semibold text-foreground">New Template</h2>
                     <form className="mt-3 space-y-3" onSubmit={handleCreate}>
                         <input
@@ -126,7 +126,7 @@ export function QuickTransactionsPage() {
                     </form>
                 </section>
 
-                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
+                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
                     <div className="mb-3 flex items-center justify-between">
                         <h2 className="text-base font-semibold text-foreground">Templates</h2>
                         <p className="text-xs text-muted">Drag to reorder</p>
@@ -178,7 +178,7 @@ function QuickTransactionCard({
         <article
             ref={setNodeRef}
             style={style}
-            className="rounded-xl border border-border bg-elevated p-3 border-border bg-elevated"
+            className="rounded-xl border border-border bg-elevated p-3"
         >
             <div className="flex items-start justify-between gap-3">
                 <button

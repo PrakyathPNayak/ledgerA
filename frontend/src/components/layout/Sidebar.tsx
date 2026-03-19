@@ -31,7 +31,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className={`border-r border-border bg-surface transition-all border-border bg-surface ${sidebarCollapsed ? 'w-20' : 'w-64'
+      className={`border-r border-border bg-surface transition-all ${sidebarCollapsed ? 'w-20' : 'w-64'
         }`}
     >
       <div className="flex items-center justify-between border-b border-border px-4 py-3 border-border">

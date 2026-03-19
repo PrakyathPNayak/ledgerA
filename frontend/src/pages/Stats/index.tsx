@@ -199,7 +199,7 @@ export function StatsPage() {
     return (
         <PageShell title="Stats">
             <div className="space-y-6">
-                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
+                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
                     <div className="grid gap-3 md:grid-cols-4">
                         <label className="space-y-1">
                             <span className="text-xs font-semibold uppercase tracking-wide text-muted">Period</span>
@@ -265,7 +265,7 @@ export function StatsPage() {
                     <StatCard label="Net" value={formatMoney(stats?.net ?? 0)} tone="neutral" />
                 </section>
 
-                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
+                <section className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
                     <h2 className="text-base font-semibold text-foreground">Income and Expense Timeline</h2>
                     <div className="mt-4" style={{ height: 320 }}>
                         {isLoading ? (
@@ -286,7 +286,7 @@ export function StatsPage() {
                 </section>
 
                 <section className="grid gap-4 lg:grid-cols-2">
-                    <article className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
+                    <article className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
                         <h2 className="text-base font-semibold text-foreground">Expense by Category</h2>
                         <div className="mt-4 h-72">
                             <ResponsiveContainer width="100%" height="100%">
@@ -309,7 +309,7 @@ export function StatsPage() {
                         </div>
                     </article>
 
-                    <article className="rounded-2xl border border-border bg-surface p-4 shadow-sm border-border bg-surface">
+                    <article className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
                         <h2 className="text-base font-semibold text-foreground">Income by Category</h2>
                         <div className="mt-4 h-72">
                             <ResponsiveContainer width="100%" height="100%">
@@ -340,10 +340,10 @@ export function StatsPage() {
 function StatCard({ label, value, tone }: { label: string; value: string; tone: 'income' | 'expense' | 'neutral' }) {
     const toneClass =
         tone === 'income'
-            ? 'border-positive/20 bg-positive-muted border-positive/20 bg-positive-muted'
+            ? 'border-positive/20 bg-positive-muted'
             : tone === 'expense'
-                ? 'border-negative/20 bg-negative-muted border-negative/20 bg-negative-muted'
-                : 'border-border bg-elevated border-border bg-elevated'
+                ? 'border-negative/20 bg-negative-muted'
+                : 'border-border bg-elevated'
 
     return (
         <article className={`rounded-2xl border p-4 ${toneClass}`}>
